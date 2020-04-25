@@ -36,5 +36,14 @@ class Tutor
 end
 
 class Examen
-	
+	attr_accessor :codigoEvaluacion, :nombreEvaluacion, :numeroPregunta
+	def initialize(codigoEvaluacion, nombreEvaluacion, numeroPregunta)
+		@codigoEvaluacion, @nombreEvaluacion, @numeroPregunta = codigoEvaluacion, nombreEvaluacion, numeroPregunta
+	end
+end
+
+class Ministerio
+	def initialize
+		@listaAlumnos = Array.new
+	end
 end
