@@ -1,5 +1,6 @@
 #Trabajo Final
 #Grupo: Coronamigos
+#Andres Inope
 
 class Alumno
 	attr_accessor :dni, :nombre, :apellido, :edad, :genero
