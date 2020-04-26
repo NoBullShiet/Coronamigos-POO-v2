@@ -165,10 +165,10 @@ class Controlador
     @modelo = modelo
   end
 
-  def registrar(tipo, *arg)
+  def registrarAlumno(tipo, *arg)
     alum = Factoria.dameObjeto(tipo, *arg)
     begin
-      modelo.registrar(alum)
+      modelo.registrarAlumno(alum)
       vista.mostrarValido("Alumno registrado exitosamente!")
     rescue Exception => e 
       vista.mensajeError(e.message)
@@ -180,3 +180,12 @@ class Controlador
     vista.listarDatosGenerales(datos)
   end
 end
+
+minedu = Ministerio.new
+vista = Vista.new
+controlador = Controlador.new(vista, minedu)
+
+controlador.registrarAlumno("AP", 78945612, "Andres", "Inope", 15, "Masculino", 1200, 5)
+controlador.registrarAlumno("AN", 12365478, "Paolo", "Guerrero", 10, "Masculino", "RURAL", 15)
+controlador.registrarAlumno("AP", 12365478, "Adriana", "Lima", 12, "Femenino", 1800, 8)
+
