@@ -3,13 +3,14 @@
 #Andres Inope
 
 class Alumno
-	attr_accessor :dni, :nombre, :apellido, :edad, :genero, :CS, :RE, :EC
+	attr_accessor :dni, :nombre, :apellido, :edad, :genero, :CS, :RE, :EC, :puntajeFinal
 	def initialize(dni, nombre, apellido, edad, genero)
   	@dni, @nombre, @apellido, @edad, @genero = dni, nombre, apellido, edad, genero
     @listaTutores = Array.new(2)
     @CS = 0
     @RE = 0
     @EC = 0
+    @puntajeFinal = 0
   end
 end
 
@@ -117,10 +118,11 @@ class Examen
 end
 
 class Ministerio
-  attr_accessor :listaAlumnos, :listaExamenes
+  attr_accessor :listaAlumnos, :listaExamenes, :listaIngresantes
 	def initialize
 		@listaAlumnos = Array.new
     @listaExamenes = Array.new
+    @listaIngresantes = Array.new
 	end
 
   def registrarAlumno(alumno)
@@ -174,7 +176,9 @@ class Ministerio
             else
               factorPuntaje = 10
             end
+
             examen.simularResultados(examen)  #simula las respuestas del alumno
+
             #ya tenemos los dos arrays, toca compararlos
             for i in 0..examen.numeroPregunta
               if examen.listaRespuestasAlumno[i] == "f" #respuesta en blanco
@@ -185,12 +189,22 @@ class Ministerio
                 respIncorrectas += 1  #contabiliza cada respuesta incorrecta
               end
             end
+
             #calculamos el puntaje final
             puntajeEC = (respCorrectas - (respIncorrectas * 0.5)) * factorPuntaje
           end
         end
+
         alumno.EC = puntajeEC #se le asigna el puntaje obtenido al alumno
       end
+    end
+  end
+
+  def obtenerResultadosAlumno(dniAlumno)
+    for alumno in listaAlumnos
+      alumno.CS = alumno.calificarSocioEconomica
+      alumno.RE = alumno.calificarRendimiento
+      alumno.puntajeFinal = (alumno.CS * 0.2) + (alumno.RE * 0.3) + (alumno.EC * 0.5)
     end
   end
 
@@ -217,8 +231,17 @@ end
 class Vista
   def listarDatosGenerales(datos)
     puts "***********Listado Total - Datos Generales*************"
+    puts "DNI".ljust(10) + "NOMBRE".ljust(10) + "APELLIDO".ljust(10) + "EDAD".ljust(5) + "GENERO"
     for alumno in datos
-      puts "#{alumno.dni} #{alumno.nombre} #{alumno.apellido} #{alumno.edad} #{alumno.genero}"
+      puts "#{alumno.dni}".ljust(10) + "#{alumno.nombre}".ljust(10) + "#{alumno.apellido}".ljust(10) + "#{alumno.edad}".ljust(5) + "#{alumno.genero}"
+    end
+  end
+
+  def listarIngresantes(listaIngresantes)
+    puts "***********Listado de Alumnos Ingresantes*************"
+    puts "DNI".ljust(10) + "NOMBRE".ljust(10) + "APELLIDO".ljust(10) + "PUNTAJE"
+    for alumno in listaIngresantes
+      puts "#{alumno.dni}".ljust(10) + "#{alumno.nombre}".ljust(10) + "#{alumno.apellido}".ljust(10) + "#{alumno.puntajeFinal}".ljust(4)
     end
   end
 
@@ -277,6 +300,15 @@ class Controlador
     end
   end
 
+  def obtenerResultadosAlumno(dniAlumno)
+    begin
+      modelo.obtenerResultadosAlumno(dniAlumno)
+      vista.mostrarValido("Resultados del alumno obtenidos exitosamente!")
+    rescue Exception => e 
+      vista.mensajeError(e.message)
+    end
+  end
+
   def imprimirListado
     datos = modelo.listaAlumnos
     vista.listarDatosGenerales(datos)
@@ -300,5 +332,6 @@ resp2 = Array["a","b","c","d","e","a","b","c","d","e","a","b","c","d","e","a","b
 controlador.ingresarRespuestasCorrectas(12145, resp2)
 
 controlador.alumnoRindeExamen(78945612, 45)
+controlador.obtenerResultadosAlumno(78945612)
 
 controlador.imprimirListado
