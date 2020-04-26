@@ -246,5 +246,7 @@ controlador.registrarExamen("EX", 12145, "Examen Facil", 20)
 
 resp1 = Array["a","b","c","d","e","a","b","c","d","e"]
 controlador.ingresarRespuestasCorrectas(12345, resp1)
+resp2 = Array["a","b","c","d","e","a","b","c","d","e","a","b","c","d","e","a","b","c","d","e"]
+controlador.ingresarRespuestasCorrectas(12145, resp2)
 
 controlador.imprimirListado
