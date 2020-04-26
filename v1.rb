@@ -105,7 +105,7 @@ class Examen
   end
 
   def simularResultados(codigoEvaluacion)
-    
+    return nil
   end
 end
 
@@ -115,9 +115,16 @@ class Ministerio
 	end
 
   def registrarAlumno(alumno)
-    alumno.validarExistencia
+    validarExistencia(alumno.dni)
     listaAlumnos.push(alumno)
   end
+
+  def validarExistencia(dni)
+    for alumno in listaAlumnos
+      raise "El alumno ya ha sido registrado." if alumno.dni == dni
+    end
+  end
+
 end
 
 class Factoria
