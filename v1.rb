@@ -187,5 +187,6 @@ controlador = Controlador.new(vista, minedu)
 
 controlador.registrarAlumno("AP", 78945612, "Andres", "Inope", 15, "Masculino", 1200, 5)
 controlador.registrarAlumno("AN", 12365478, "Paolo", "Guerrero", 10, "Masculino", "RURAL", 15)
-controlador.registrarAlumno("AP", 12365478, "Adriana", "Lima", 12, "Femenino", 1800, 8)
+controlador.registrarAlumno("AP", 65412877, "Adriana", "Lima", 12, "Femenino", 1800, 8)
 
+controlador.imprimirListado
