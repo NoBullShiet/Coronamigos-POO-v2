@@ -164,21 +164,19 @@ class Controlador
     @vista = vista
     @modelo = modelo
   end
+
   def registrar(tipo, *arg)
     alum = Factoria.dameObjeto(tipo, *arg)
-        begin
-      modelo.registrar(parti)
-      vista.mostrarValido("Ok REgistrado")
+    begin
+      modelo.registrar(alum)
+      vista.mostrarValido("Alumno registrado exitosamente!")
     rescue Exception => e 
       vista.mensajeError(e.message)
     end
   end
+
   def imprimirListado
-    datos = modelo.arregloParticipantes
-    vista.listar(datos)
-  end
-  def dimeElGanador
-      gana = modelo.calcularGanador
-      vista.imprimeGanador(gana)
+    datos = modelo.listaAlumnos
+    vista.listarDatosGenerales(datos)
   end
 end
