@@ -110,3 +110,13 @@ class Ministerio
 	end
 end
 
+class Factoria
+  def self.dameObjeto(tipo, *arg)
+    case tipo
+    when "AN"
+      AlumnoNacional.new(arg[0], arg[1], arg[2], arg[3], arg[4], arg[5],arg[6])
+    when "AP"
+      AlumnoParticular.new(arg[0], arg[1], arg[2], arg[3], arg[4], arg[5],arg[6])        
+    end
+  end
+end
