@@ -96,16 +96,13 @@ class Tutor
 end
 
 class Examen
-	attr_accessor :codigoEvaluacion, :nombreEvaluacion, :numeroPregunta, :listaRespuestas
+	attr_accessor :codigoEvaluacion, :nombreEvaluacion, :numeroPregunta, :listaRespuestasAlumno, :listaRespuestasCorrectas
 	def initialize(codigoEvaluacion, nombreEvaluacion, numeroPregunta)
 		@codigoEvaluacion, @nombreEvaluacion, @numeroPregunta = codigoEvaluacion, nombreEvaluacion, numeroPregunta
     @listaRespuestasAlumno = Array.new(numeroPregunta)
     @listaRespuestasCorrectas = Array.new(numeroPregunta)
 	end
 
-  def ingresarRespuestasCorrectas(resps)
-    
-  end
 
   def simularResultados(examen)
     for i in 0..examen.numeroPregunta
@@ -113,6 +110,7 @@ class Examen
       examen.listaRespuestasAlumno[i] = a
     end
   end
+
 end
 
 class Ministerio
@@ -142,6 +140,22 @@ class Ministerio
     for examen in listaExamenes
       raise "El examen ya ha sido registrado." if examen.codigoEvaluacion == codigoEvaluacion
     end
+  end
+
+  def ingresarRespuestasCorrectas(codigoEvaluacion, respuestas)
+    for examen in listaExamenes
+      if examen.codigoEvaluacion == codigoEvaluacion
+        validarCantidadRespuestas(examen, respuestas)
+        for i in 0..examen.numeroPregunta
+          examen.listaRespuestasCorrectas[i] = respuestas[i]
+        end
+      end
+    end
+  end
+
+  def validarCantidadRespuestas(examen, respuestas)
+    m = respuestas.length
+    raise "La cantidad de respuestas no coincide con la cantidad de preguntas del examen." if m != examen.numeroPregunta
   end
 end
 
@@ -204,6 +218,15 @@ class Controlador
     end
   end
 
+  def ingresarRespuestasCorrectas(codigoEvaluacion, respuestas)
+    begin
+      modelo.ingresarRespuestasCorrectas(codigoEvaluacion, respuestas)
+      vista.mostrarValido("Respuestas ingresadas correctamente!")
+    rescue Exception => e 
+      vista.mensajeError(e.message)
+    end
+  end
+
   def imprimirListado
     datos = modelo.listaAlumnos
     vista.listarDatosGenerales(datos)
@@ -220,5 +243,8 @@ controlador.registrarAlumno("AP", 65412877, "Adriana", "Lima", 12, "Femenino", 1
 
 controlador.registrarExamen("EX", 12345, "Examen Dificil", 10)
 controlador.registrarExamen("EX", 12145, "Examen Facil", 20)
+
+resp1 = Array["a","b","c","d","e","a","b","c","d","e"]
+controlador.ingresarRespuestasCorrectas(12345, resp1)
 
 controlador.imprimirListado
