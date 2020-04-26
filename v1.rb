@@ -88,8 +88,8 @@ class Tutor
 		@dniAlumno, @nombre, @apellido, @parentesco = dniAlumno, nombre, apellido, parentesco
 	end
 
-  def buscarTutores(listaAlumnos)
-    for 
+  def registrarTutor(alumno)
+    return nil
   end
 end
 
@@ -113,6 +113,11 @@ class Ministerio
 	def initialize
 		@listaAlumnos = Array.new
 	end
+
+  def registrarAlumno(alumno)
+    alumno.validarExistencia
+    listaAlumnos.push(alumno)
+  end
 end
 
 class Factoria
