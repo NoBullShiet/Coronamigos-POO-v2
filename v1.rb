@@ -138,3 +138,47 @@ class Factoria
     end
   end
 end
+
+
+class Vista
+  def listarDatosGenerales(datos)
+    puts "***********Listado Total - Datos Generales*************"
+    for alumno in datos
+      puts "#{alumno.dni} #{alumno.nombre} #{alumno.apellido} #{alumno.edad} #{alumno.genero}"
+    end
+  end
+
+  def mensajeError(m)
+    puts "Error: #{m}"
+  end
+
+  def mostrarValido(m)
+    puts m
+  end
+end
+
+
+class Controlador
+  attr_accessor :vista, :modelo
+  def initialize(vista, modelo)
+    @vista = vista
+    @modelo = modelo
+  end
+  def registrar(tipo, *arg)
+    alum = Factoria.dameObjeto(tipo, *arg)
+        begin
+      modelo.registrar(parti)
+      vista.mostrarValido("Ok REgistrado")
+    rescue Exception => e 
+      vista.mensajeError(e.message)
+    end
+  end
+  def imprimirListado
+    datos = modelo.arregloParticipantes
+    vista.listar(datos)
+  end
+  def dimeElGanador
+      gana = modelo.calcularGanador
+      vista.imprimeGanador(gana)
+  end
+end
