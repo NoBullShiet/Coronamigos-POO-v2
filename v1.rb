@@ -89,10 +89,19 @@ class Tutor
 end
 
 class Examen
-	attr_accessor :codigoEvaluacion, :nombreEvaluacion, :numeroPregunta
+	attr_accessor :codigoEvaluacion, :nombreEvaluacion, :numeroPregunta, :listaRespuestas
 	def initialize(codigoEvaluacion, nombreEvaluacion, numeroPregunta)
 		@codigoEvaluacion, @nombreEvaluacion, @numeroPregunta = codigoEvaluacion, nombreEvaluacion, numeroPregunta
+    @listaRespuestas = Array.new(numeroPregunta)
 	end
+
+  def ingresarRespuestas(listaRespuestas)
+    @listaRespuestas = listaRespuestas
+  end
+
+  def simularResultados
+    
+  end
 end
 
 class Ministerio
