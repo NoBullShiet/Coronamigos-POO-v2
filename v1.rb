@@ -8,8 +8,6 @@ class Alumno
   	@dni, @nombre, @apellido, @edad, @genero = dni, nombre, apellido, edad, genero
     @listaTutores = Array.new(2)
   end
-
-
 end
 
 class AlumnoNacional < Alumno
@@ -85,9 +83,9 @@ class AlumnoParticular < Alumno
 end
 
 class Tutor
-	attr_accessor :dni, :nombre, :apellido, :parentesco
-	def initialize(dniAlumno, nombre, apellido, parentesco)
-		@dniAlumno, @nombre, @apellido, @parentesco = dniAlumno, nombre, apellido, parentesco
+	attr_accessor :dniAlumno, :dni, :nombre, :apellido, :parentesco
+	def initialize(dniAlumno, dni, nombre, apellido, parentesco)
+		@dniAlumno, @dni, @nombre, @apellido, @parentesco = dniAlumno, dni, nombre, apellido, parentesco
 	end
 
   def registrarTutor(alumno)
@@ -96,13 +94,12 @@ class Tutor
 end
 
 class Examen
-	attr_accessor :codigoEvaluacion, :nombreEvaluacion, :numeroPregunta, :listaRespuestasAlumno, :listaRespuestasCorrectas
-	def initialize(codigoEvaluacion, nombreEvaluacion, numeroPregunta)
-		@codigoEvaluacion, @nombreEvaluacion, @numeroPregunta = codigoEvaluacion, nombreEvaluacion, numeroPregunta
+	attr_accessor :codigoEvaluacion, :numeroPregunta, :listaRespuestasAlumno, :listaRespuestasCorrectas
+	def initialize(codigoEvaluacion, numeroPregunta)
+		@codigoEvaluacion, @numeroPregunta = codigoEvaluacion, numeroPregunta
     @listaRespuestasAlumno = Array.new(numeroPregunta)
     @listaRespuestasCorrectas = Array.new(numeroPregunta)
 	end
-
 
   def simularResultados(examen)
     for i in 0..examen.numeroPregunta
@@ -151,6 +148,25 @@ class Ministerio
         end
       end
     end
+  end
+
+  def alumnoRindeExamen(dniAlumno, codigoEvaluacion)
+    respCorrectas = 0
+    for alumno in listaAlumnos
+      if alumno.dni == dniAlumno  #encuentra el alumno al que se le está asignando el examen
+        for examen in listaExamenes
+          if examen.codigoEvaluacion == codigoEvaluacion  #encuentra el examen que se le está asignando al alumno
+            examen.simularResultados  #simula las respuestas del alumno
+            #ya tenemos los dos arrays, toca compararlos
+            for i in 0..examen.numeroPregunta
+              if examen.listaRespuestasAlumno[i] == examen.listaRespuestasCorrectas[i]
+                respCorrectas += 1
+              end
+            end
+
+
+          end
+      end
   end
 
   def validarCantidadRespuestas(examen, respuestas)
@@ -227,6 +243,15 @@ class Controlador
     end
   end
 
+  def alumnoRindeExamen(dniAlumno, codigoEvaluacion)
+    begin
+      modelo.alumnoRindeExamen(dniAlumno, codigoEvaluacion)
+      vista.mostrarValido("Registro de examen rendido exitoso!")
+    rescue Exception => e 
+      vista.mensajeError(e.message)
+    end
+  end
+
   def imprimirListado
     datos = modelo.listaAlumnos
     vista.listarDatosGenerales(datos)
@@ -241,12 +266,14 @@ controlador.registrarAlumno("AP", 78945612, "Andres", "Inope", 15, "Masculino", 
 controlador.registrarAlumno("AN", 12365478, "Paolo", "Guerrero", 10, "Masculino", "RURAL", 15)
 controlador.registrarAlumno("AP", 65412877, "Adriana", "Lima", 12, "Femenino", 1800, 8)
 
-controlador.registrarExamen("EX", 12345, "Examen Dificil", 10)
-controlador.registrarExamen("EX", 12145, "Examen Facil", 20)
+controlador.registrarExamen("EX", 45, 10)
+controlador.registrarExamen("EX", 12, 20)
 
 resp1 = Array["a","b","c","d","e","a","b","c","d","e"]
 controlador.ingresarRespuestasCorrectas(12345, resp1)
 resp2 = Array["a","b","c","d","e","a","b","c","d","e","a","b","c","d","e","a","b","c","d","e"]
 controlador.ingresarRespuestasCorrectas(12145, resp2)
+
+controlador.alumnoRindeExamen(dni, codigoEvaluacion)
 
 controlador.imprimirListado
