@@ -116,7 +116,7 @@ class Examen
 end
 
 class Ministerio
-  attr_accessor :listaAlumnos
+  attr_accessor :listaAlumnos, :listaExamenes
 	def initialize
 		@listaAlumnos = Array.new
     @listaExamenes = Array.new
@@ -153,7 +153,7 @@ class Factoria
     when "AP"
       AlumnoParticular.new(arg[0], arg[1], arg[2], arg[3], arg[4], arg[5],arg[6])
     when "EX"
-      Examen.new(arg[0], arg[1], arg[2], arg[3], arg[4], arg[5],arg[6])
+      Examen.new(arg[0], arg[1], arg[2])
     end
   end
 end
@@ -196,7 +196,12 @@ class Controlador
 
   def registrarExamen(tipo, *arg)
     ex = Factoria.dameObjeto(tipo, *arg)
-
+    begin
+      modelo.registrarExamen(ex)
+      vista.mostrarValido("Examen registrado exitosamente!")
+    rescue Exception => e 
+      vista.mensajeError(e.message)
+    end
   end
 
   def imprimirListado
@@ -212,5 +217,8 @@ controlador = Controlador.new(vista, minedu)
 controlador.registrarAlumno("AP", 78945612, "Andres", "Inope", 15, "Masculino", 1200, 5)
 controlador.registrarAlumno("AN", 12365478, "Paolo", "Guerrero", 10, "Masculino", "RURAL", 15)
 controlador.registrarAlumno("AP", 65412877, "Adriana", "Lima", 12, "Femenino", 1800, 8)
+
+controlador.registrarExamen("EX", 12345, "Examen Dificil", 10)
+controlador.registrarExamen("EX", 12145, "Examen Facil", 20)
 
 controlador.imprimirListado
