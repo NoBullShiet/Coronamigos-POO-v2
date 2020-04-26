@@ -6,6 +6,7 @@ class Alumno
 	attr_accessor :dni, :nombre, :apellido, :edad, :genero
 	def initialize(dni, nombre, apellido, edad, genero)
   	@dni, @nombre, @apellido, @edad, @genero = dni, nombre, apellido, edad, genero
+    @listaTutores = Array.new(2)
   end
 end
 
@@ -83,9 +84,13 @@ end
 
 class Tutor
 	attr_accessor :dni, :nombre, :apellido, :parentesco
-	def initialize(dni, nombre, apellido, parentesco)
-		@dni, @nombre, @apellido, @parentesco = dni, nombre, apellido, parentesco
+	def initialize(dniAlumno, nombre, apellido, parentesco)
+		@dniAlumno, @nombre, @apellido, @parentesco = dniAlumno, nombre, apellido, parentesco
 	end
+
+  def buscarTutores(listaAlumnos)
+    for 
+  end
 end
 
 class Examen
