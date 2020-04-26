@@ -110,6 +110,7 @@ class Examen
 end
 
 class Ministerio
+  attr_accessor :listaAlumnos
 	def initialize
 		@listaAlumnos = Array.new
 	end
