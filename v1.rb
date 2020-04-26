@@ -7,6 +7,9 @@ class Alumno
 	def initialize(dni, nombre, apellido, edad, genero)
   	@dni, @nombre, @apellido, @edad, @genero = dni, nombre, apellido, edad, genero
     @listaTutores = Array.new(2)
+    @CS = 0
+    @RE = 0
+    @EC = 0
   end
 end
 
@@ -151,22 +154,40 @@ class Ministerio
   end
 
   def alumnoRindeExamen(dniAlumno, codigoEvaluacion)
+    #variables necesarias para el cálculo
     respCorrectas = 0
+    respIncorrectas = 0
+    factorPuntaje = 0
+    puntajeEC = 0
+
+    #lógica para determinar el puntaje del alumno
     for alumno in listaAlumnos
       if alumno.dni == dniAlumno  #encuentra el alumno al que se le está asignando el examen
         for examen in listaExamenes
           if examen.codigoEvaluacion == codigoEvaluacion  #encuentra el examen que se le está asignando al alumno
-            examen.simularResultados  #simula las respuestas del alumno
+            #determinamos cuánto va a valer cada pregunta
+            if examen.numeroPregunta > 10
+              factorPuntaje = 5
+            else
+              factorPuntaje = 10
+            end
+            examen.simularResultados(examen)  #simula las respuestas del alumno
             #ya tenemos los dos arrays, toca compararlos
             for i in 0..examen.numeroPregunta
               if examen.listaRespuestasAlumno[i] == examen.listaRespuestasCorrectas[i]
-                respCorrectas += 1
+                respCorrectas += 1    #contabiliza cada respuesta correcta
+              else
+                respIncorrectas += 1  #contabiliza cada respuesta incorrecta
               end
             end
-
-
+            #calculamos el puntaje final
+            puntajeEC = (respCorrectas - (respIncorrectas * 0.5)) * factorPuntaje
+            #falta modificar la lógica para contabilizar respuestas en vacío
           end
+        end
+        alumno.EC = puntajeEC #se le asigna el puntaje obtenido al alumno
       end
+    end
   end
 
   def validarCantidadRespuestas(examen, respuestas)
@@ -183,7 +204,7 @@ class Factoria
     when "AP"
       AlumnoParticular.new(arg[0], arg[1], arg[2], arg[3], arg[4], arg[5],arg[6])
     when "EX"
-      Examen.new(arg[0], arg[1], arg[2])
+      Examen.new(arg[0], arg[1])
     end
   end
 end
@@ -274,6 +295,6 @@ controlador.ingresarRespuestasCorrectas(12345, resp1)
 resp2 = Array["a","b","c","d","e","a","b","c","d","e","a","b","c","d","e","a","b","c","d","e"]
 controlador.ingresarRespuestasCorrectas(12145, resp2)
 
-controlador.alumnoRindeExamen(dni, codigoEvaluacion)
+controlador.alumnoRindeExamen(78945612, 45)
 
 controlador.imprimirListado
