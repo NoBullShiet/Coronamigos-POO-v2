@@ -3,7 +3,7 @@
 #Andres Inope
 
 class Alumno
-	attr_accessor :dni, :nombre, :apellido, :edad, :genero
+	attr_accessor :dni, :nombre, :apellido, :edad, :genero, :CS, :RE, :EC
 	def initialize(dni, nombre, apellido, edad, genero)
   	@dni, @nombre, @apellido, @edad, @genero = dni, nombre, apellido, edad, genero
     @listaTutores = Array.new(2)
@@ -105,10 +105,13 @@ class Examen
 	end
 
   def simularResultados(examen)
+    #lógica para recorrer todo el array y asignale una letra aleatoria
     for i in 0..examen.numeroPregunta
-      a = ('a'..'e').to_a.sample
-      examen.listaRespuestasAlumno[i] = a
+      a = ('a'..'f').to_a.sample            #comando para sacar una letra aleatoria a - f (siendo f la respuesta en blanco)
+      examen.listaRespuestasAlumno[i] = a   #se ingresa la letra aleatoria al array
     end
+
+    #puts "#{examen.listaRespuestasAlumno}" #prueba de imprimir el array para ver los resultados del aleatorio
   end
 
 end
@@ -174,7 +177,9 @@ class Ministerio
             examen.simularResultados(examen)  #simula las respuestas del alumno
             #ya tenemos los dos arrays, toca compararlos
             for i in 0..examen.numeroPregunta
-              if examen.listaRespuestasAlumno[i] == examen.listaRespuestasCorrectas[i]
+              if examen.listaRespuestasAlumno[i] == "f" #respuesta en blanco
+                #no hace nada si la respuesta del alumno está en blanco
+              elsif examen.listaRespuestasAlumno[i] == examen.listaRespuestasCorrectas[i]
                 respCorrectas += 1    #contabiliza cada respuesta correcta
               else
                 respIncorrectas += 1  #contabiliza cada respuesta incorrecta
@@ -182,7 +187,6 @@ class Ministerio
             end
             #calculamos el puntaje final
             puntajeEC = (respCorrectas - (respIncorrectas * 0.5)) * factorPuntaje
-            #falta modificar la lógica para contabilizar respuestas en vacío
           end
         end
         alumno.EC = puntajeEC #se le asigna el puntaje obtenido al alumno
