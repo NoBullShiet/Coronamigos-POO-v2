@@ -8,6 +8,8 @@ class Alumno
   	@dni, @nombre, @apellido, @edad, @genero = dni, nombre, apellido, edad, genero
     @listaTutores = Array.new(2)
   end
+
+
 end
 
 class AlumnoNacional < Alumno
@@ -97,17 +99,18 @@ class Examen
 	attr_accessor :codigoEvaluacion, :nombreEvaluacion, :numeroPregunta, :listaRespuestas
 	def initialize(codigoEvaluacion, nombreEvaluacion, numeroPregunta)
 		@codigoEvaluacion, @nombreEvaluacion, @numeroPregunta = codigoEvaluacion, nombreEvaluacion, numeroPregunta
-    @listaRespuestas = Array.new(numeroPregunta)
+    @listaRespuestasAlumno = Array.new(numeroPregunta)
+    @listaRespuestasCorrectas = Array.new(numeroPregunta)
 	end
 
-  def ingresarRespuestas(listaRespuestas)
-    @listaRespuestas = listaRespuestas
+  def ingresarRespuestasCorrectas(resps)
+    
   end
 
-  def simularResultados
-    for i in 0..numeroPregunta
+  def simularResultados(examen)
+    for i in 0..examen.numeroPregunta
       a = ('a'..'e').to_a.sample
-      listaRespuestas[i] = a
+      examen.listaRespuestasAlumno[i] = a
     end
   end
 end
@@ -116,19 +119,30 @@ class Ministerio
   attr_accessor :listaAlumnos
 	def initialize
 		@listaAlumnos = Array.new
+    @listaExamenes = Array.new
 	end
 
   def registrarAlumno(alumno)
-    validarExistencia(alumno.dni)
+    validarExistenciaAlumno(alumno.dni)
     listaAlumnos.push(alumno)
   end
 
-  def validarExistencia(dni)
+  def registrarExamen(examen)
+    validarExistenciaExamen(examen.codigoEvaluacion)
+    listaExamenes.push(examen)
+  end
+
+  def validarExistenciaAlumno(dni)
     for alumno in listaAlumnos
       raise "El alumno ya ha sido registrado." if alumno.dni == dni
     end
   end
 
+  def validarExistenciaExamen(codigoEvaluacion)
+    for examen in listaExamenes
+      raise "El examen ya ha sido registrado." if examen.codigoEvaluacion == codigoEvaluacion
+    end
+  end
 end
 
 class Factoria
@@ -137,7 +151,9 @@ class Factoria
     when "AN"
       AlumnoNacional.new(arg[0], arg[1], arg[2], arg[3], arg[4], arg[5],arg[6])
     when "AP"
-      AlumnoParticular.new(arg[0], arg[1], arg[2], arg[3], arg[4], arg[5],arg[6])        
+      AlumnoParticular.new(arg[0], arg[1], arg[2], arg[3], arg[4], arg[5],arg[6])
+    when "EX"
+      Examen.new(arg[0], arg[1], arg[2], arg[3], arg[4], arg[5],arg[6])
     end
   end
 end
@@ -176,6 +192,11 @@ class Controlador
     rescue Exception => e 
       vista.mensajeError(e.message)
     end
+  end
+
+  def registrarExamen(tipo, *arg)
+    ex = Factoria.dameObjeto(tipo, *arg)
+
   end
 
   def imprimirListado
