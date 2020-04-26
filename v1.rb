@@ -99,7 +99,7 @@ class Examen
     @listaRespuestas = listaRespuestas
   end
 
-  def simularResultados
+  def simularResultados(codigoEvaluacion)
     
   end
 end
