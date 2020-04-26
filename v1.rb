@@ -15,7 +15,7 @@ class AlumnoNacional < Alumno
   def initialize(dni, nombre, apellido, edad, genero, tipo, promedio2do)
  		super(dni, nombre, apellido, edad, genero)
  		@colegio = "NACIONAL"
- 		@tipo = tipo
+ 		@tipo = tipo.upcase
  		@promedio2do = promedio2do
  	end
 
@@ -104,8 +104,11 @@ class Examen
     @listaRespuestas = listaRespuestas
   end
 
-  def simularResultados(codigoEvaluacion)
-    return nil
+  def simularResultados
+    for i in 0..numeroPregunta
+      a = ('a'..'e').to_a.sample
+      listaRespuestas[i] = a
+    end
   end
 end
 
