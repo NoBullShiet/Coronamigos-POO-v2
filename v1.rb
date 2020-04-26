@@ -107,7 +107,8 @@ class Examen
 
   def simularResultados(examen)
     #lógica para recorrer todo el array y asignale una letra aleatoria
-    for i in 0..examen.numeroPregunta
+    n = examen.numeroPregunta - 1
+    for i in 0..n
       a = ('a'..'f').to_a.sample            #comando para sacar una letra aleatoria a - f (siendo f la respuesta en blanco)
       examen.listaRespuestasAlumno[i] = a   #se ingresa la letra aleatoria al array
     end
@@ -151,7 +152,8 @@ class Ministerio
     for examen in listaExamenes
       if examen.codigoEvaluacion == codigoEvaluacion
         validarCantidadRespuestas(examen, respuestas)
-        for i in 0..examen.numeroPregunta
+        n = examen.numeroPregunta - 1
+        for i in 0..n
           examen.listaRespuestasCorrectas[i] = respuestas[i]
         end
       end
@@ -190,8 +192,14 @@ class Ministerio
               end
             end
 
+            puts "#{examen.listaRespuestasAlumno}"
+            puts "#{examen.listaRespuestasCorrectas}"
+
             #calculamos el puntaje final
             puntajeEC = (respCorrectas - (respIncorrectas * 0.5)) * factorPuntaje
+            if puntajeEC < 0  #se valida que el resultado no sea negativo
+              puntajeEC = 0
+            end
           end
         end
 
@@ -237,19 +245,19 @@ class Vista
     end
   end
 
-  def listarResultadosGenerales(listaAlumnos)
-    puts "***************Listado de Resultados Generales***************"
-    puts "DNI".ljust(10) + "NOMBRE".ljust(10) + "APELLIDO".ljust(10) + "PUNTAJE"
-    for alumno in listaAlumnos
-      puts "#{alumno.dni}".ljust(10) + "#{alumno.nombre}".ljust(10) + "#{alumno.apellido}".ljust(10) + "#{alumno.puntajeFinal}".ljust(4)
-    end
-  end
-
   def listarIngresantes(listaIngresantes)
     puts "***************Listado de Alumnos Ingresantes***************"
     puts "DNI".ljust(10) + "NOMBRE".ljust(10) + "APELLIDO".ljust(10) + "PUNTAJE"
     for alumno in listaIngresantes
       puts "#{alumno.dni}".ljust(10) + "#{alumno.nombre}".ljust(10) + "#{alumno.apellido}".ljust(10) + "#{alumno.puntajeFinal}".ljust(4)
+    end
+  end
+
+  def listarResultadosGenerales(listaAlumnos)
+    puts "***************Listado de Resultados Generales***************"
+    puts "DNI".ljust(10) + "NOMBRE".ljust(10) + "APELLIDO".ljust(10) + "CS".ljust(4) + "RE".ljust(4) + "EC".ljust(10) + "PUNTAJE"
+    for alumno in listaAlumnos
+      puts "#{alumno.dni}".ljust(10) + "#{alumno.nombre}".ljust(10) + "#{alumno.apellido}".ljust(10) + "#{alumno.CS}".ljust(4) + "#{alumno.RE}".ljust(4) + "#{alumno.EC}".ljust(10) + "#{alumno.puntajeFinal}".ljust(4)
     end
   end
 
@@ -321,6 +329,11 @@ class Controlador
     datos = modelo.listaAlumnos
     vista.listarDatosGenerales(datos)
   end
+
+  def imprimirListadoResultados
+    datos = modelo.listaAlumnos
+    vista.listarResultadosGenerales(datos)
+  end
 end
 
 minedu = Ministerio.new
@@ -335,11 +348,17 @@ controlador.registrarExamen("EX", 45, 10)
 controlador.registrarExamen("EX", 12, 20)
 
 resp1 = Array["a","b","c","d","e","a","b","c","d","e"]
-controlador.ingresarRespuestasCorrectas(12345, resp1)
+controlador.ingresarRespuestasCorrectas(45, resp1)
 resp2 = Array["a","b","c","d","e","a","b","c","d","e","a","b","c","d","e","a","b","c","d","e"]
-controlador.ingresarRespuestasCorrectas(12145, resp2)
+controlador.ingresarRespuestasCorrectas(12, resp2)
 
 controlador.alumnoRindeExamen(78945612, 45)
 controlador.obtenerResultadosAlumno(78945612)
 
-controlador.imprimirListado
+controlador.alumnoRindeExamen(12365478, 12)
+controlador.obtenerResultadosAlumno(12365478)
+
+controlador.alumnoRindeExamen(65412877, 12)
+controlador.obtenerResultadosAlumno(65412877)
+
+controlador.imprimirListadoResultados
