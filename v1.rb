@@ -230,15 +230,23 @@ end
 
 class Vista
   def listarDatosGenerales(datos)
-    puts "***********Listado Total - Datos Generales*************"
+    puts "***************Listado Total - Datos Generales***************"
     puts "DNI".ljust(10) + "NOMBRE".ljust(10) + "APELLIDO".ljust(10) + "EDAD".ljust(5) + "GENERO"
     for alumno in datos
       puts "#{alumno.dni}".ljust(10) + "#{alumno.nombre}".ljust(10) + "#{alumno.apellido}".ljust(10) + "#{alumno.edad}".ljust(5) + "#{alumno.genero}"
     end
   end
 
+  def listarResultadosGenerales(listaAlumnos)
+    puts "***************Listado de Resultados Generales***************"
+    puts "DNI".ljust(10) + "NOMBRE".ljust(10) + "APELLIDO".ljust(10) + "PUNTAJE"
+    for alumno in listaAlumnos
+      puts "#{alumno.dni}".ljust(10) + "#{alumno.nombre}".ljust(10) + "#{alumno.apellido}".ljust(10) + "#{alumno.puntajeFinal}".ljust(4)
+    end
+  end
+
   def listarIngresantes(listaIngresantes)
-    puts "***********Listado de Alumnos Ingresantes*************"
+    puts "***************Listado de Alumnos Ingresantes***************"
     puts "DNI".ljust(10) + "NOMBRE".ljust(10) + "APELLIDO".ljust(10) + "PUNTAJE"
     for alumno in listaIngresantes
       puts "#{alumno.dni}".ljust(10) + "#{alumno.nombre}".ljust(10) + "#{alumno.apellido}".ljust(10) + "#{alumno.puntajeFinal}".ljust(4)
