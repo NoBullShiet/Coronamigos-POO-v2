@@ -117,7 +117,6 @@ class Ministerio
 	def initialize
 		@listaAlumnos = Array.new
     @listaExamenes = Array.new
-    @listaIngresantes = Array.new
 	end
 
   def registrarAlumno(alumno)
@@ -212,6 +211,10 @@ class Ministerio
     end
   end
 
+  def definirVacantes(cantVacantes)
+    @listarIngresantes = Array.new(cantVacantes)
+  end
+
   def obtenerResultadosAlumno(dniAlumno)
     for alumno in listaAlumnos
       alumno.CS = alumno.calificarSocioEconomica
@@ -236,7 +239,7 @@ class Factoria
     when "EX"
       Examen.new(arg[0], arg[1])
     when "TU"
-      Tutor.new(arg[0], arg[1], arg[2], arg[3], arg[4], arg[5])
+      Tutor.new(arg[0], arg[1], arg[2], arg[3], arg[4])
     end
   end
 end
@@ -261,9 +264,9 @@ class Vista
 
   def listarResultadosGenerales(listaAlumnos)
     puts "***************Listado de Resultados Generales***************"
-    puts "DNI".ljust(10) + "NOMBRE".ljust(10) + "APELLIDO".ljust(10) + "CS".ljust(4) + "RE".ljust(4) + "EC".ljust(10) + "PUNTAJE"
+    puts "DNI".ljust(10) + "NOMBRE".ljust(10) + "APELLIDO".ljust(10) + "CS".ljust(4) + "RE".ljust(4) + "EC".ljust(6) + "PUNTAJE"
     for alumno in listaAlumnos
-      puts "#{alumno.dni}".ljust(10) + "#{alumno.nombre}".ljust(10) + "#{alumno.apellido}".ljust(10) + "#{alumno.CS}".ljust(4) + "#{alumno.RE}".ljust(4) + "#{alumno.EC}".ljust(10) + "#{alumno.puntajeFinal}".ljust(4)
+      puts "#{alumno.dni}".ljust(10) + "#{alumno.nombre}".ljust(10) + "#{alumno.apellido}".ljust(10) + "#{alumno.CS}".ljust(4) + "#{alumno.RE}".ljust(4) + "#{alumno.EC}".ljust(6) + "#{alumno.puntajeFinal}".ljust(4)
     end
   end
 
@@ -282,6 +285,10 @@ class Controlador
   def initialize(vista, modelo)
     @vista = vista
     @modelo = modelo
+  end
+
+  def definirVacantes(cantVacantes)
+    modelo.definirVacantes(cantVacantes)
   end
 
   def registrarAlumno(tipo, *arg)
@@ -356,11 +363,17 @@ minedu = Ministerio.new
 vista = Vista.new
 controlador = Controlador.new(vista, minedu)
 
+controlador.definirVacantes(3)
+
 controlador.registrarAlumno("AP", 78945612, "Andres", "Inope", 15, "Masculino", 1200, 5)
 controlador.registrarAlumno("AN", 12365478, "Paolo", "Guerrero", 10, "Masculino", "RURAL", 15)
 controlador.registrarAlumno("AP", 65412877, "Adriana", "Lima", 12, "Femenino", 1800, 8)
+controlador.registrarAlumno("AN", 65412888, "Chapo", "Guzman", 8, "Masculino", "RURAL", 14)
+controlador.registrarAlumno("AP", 98744113, "Pablo", "Escobar", 9, "Masculino", 2500, 1)
 
 controlador.registrarTutor("TU", 78945612, 65412382, "German", "Carty", "Padre")
+controlador.registrarTutor("TU", 78945612, 65421555, "Johan", "Solis", "Tio")
+controlador.registrarTutor("TU", 78945612, 65412382, "Frodo", "Arendale", "Tio")
 
 controlador.registrarExamen("EX", 45, 10)
 controlador.registrarExamen("EX", 12, 20)
@@ -376,7 +389,13 @@ controlador.obtenerResultadosAlumno(78945612)
 controlador.alumnoRindeExamen(12365478, 12)
 controlador.obtenerResultadosAlumno(12365478)
 
-controlador.alumnoRindeExamen(65412877, 12)
+controlador.alumnoRindeExamen(65412877, 45)
 controlador.obtenerResultadosAlumno(65412877)
+
+controlador.alumnoRindeExamen(65412888, 45)
+controlador.obtenerResultadosAlumno(65412888)
+
+controlador.alumnoRindeExamen(98744113, 45)
+controlador.obtenerResultadosAlumno(98744113)
 
 controlador.imprimirListadoResultados
