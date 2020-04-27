@@ -12,7 +12,6 @@ class Alumno
     @EC = 0
     @puntajeFinal = 0
   end
-
 end
 
 class AlumnoNacional < Alumno
@@ -134,7 +133,7 @@ class Ministerio
   def registrarTutor(tutor)
     for alumno in listaAlumnos  #busca el alumno que le corresponde al tutor
       if alumno.dni == tutor.dniAlumno
-        n = listaTutores.length
+        n = alumno.listaTutores.length
         raise "El alumno ya cuenta con 2 tutores registrados." if n == 2  #comprueba que el alumno no tenga más de dos tutores
         alumno.listaTutores.push(tutor)
       end
@@ -360,6 +359,8 @@ controlador = Controlador.new(vista, minedu)
 controlador.registrarAlumno("AP", 78945612, "Andres", "Inope", 15, "Masculino", 1200, 5)
 controlador.registrarAlumno("AN", 12365478, "Paolo", "Guerrero", 10, "Masculino", "RURAL", 15)
 controlador.registrarAlumno("AP", 65412877, "Adriana", "Lima", 12, "Femenino", 1800, 8)
+
+controlador.registrarTutor("TU", 78945612, 65412382, "German", "Carty", "Padre")
 
 controlador.registrarExamen("EX", 45, 10)
 controlador.registrarExamen("EX", 12, 20)
