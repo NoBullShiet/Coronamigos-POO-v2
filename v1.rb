@@ -114,11 +114,12 @@ class Examen
 end
 
 class Ministerio
-  attr_accessor :listaAlumnos, :listaExamenes, :listaIngresantes
+  attr_accessor :listaAlumnos, :listaExamenes, :listaIngresantes, :listaNoIngresantes
 	def initialize
 		@listaAlumnos = Array.new
     @listaExamenes = Array.new
     @listaIngresantes = Array.new
+    @listaNoIngresantes = Array.new
 	end
 
   def registrarAlumno(alumno)
@@ -230,11 +231,16 @@ class Ministerio
   end
 
   def obtenerIngresantes(cantVacantes)
-    listaTemp = Array.new
-    listaTemp = ordenarAlumnos
-    n = cantVacantes - 1
-    for i in 0..n
-      listaIngresantes.push(listaTemp[i])
+    listaAlumnos = ordenarAlumnos
+    m = listaAlumnos.length - 1
+
+    #Armamos las listas de ingresantes y no ingresantes
+    for i in 0..m
+      if i < cantVacantes
+        listaIngresantes.push(listaAlumnos[i])
+      else
+        listaNoIngresantes.push(listaAlumnos[i])
+      end
     end
 
     for alumno in listaIngresantes
@@ -243,7 +249,7 @@ class Ministerio
     #puts "#{listaIngresantes}" #línea de prueba para comprobar que la lista de ingresantes es generada correctamente.
   end
 
-  def obtenerResultadosAlumno(dniAlumno)
+  def obtenerResultadosAlumnos
     for alumno in listaAlumnos
       alumno.CS = alumno.calificarSocioEconomica
       alumno.RE = alumno.calificarRendimiento
@@ -292,6 +298,15 @@ class Vista
     puts "***************Listado de Alumnos Ingresantes***************"
     puts "DNI".ljust(10) + "NOMBRE".ljust(10) + "APELLIDO".ljust(10) + "PUNTAJE"
     for alumno in listaIngresantes
+      puts "#{alumno.dni}".ljust(10) + "#{alumno.nombre}".ljust(10) + "#{alumno.apellido}".ljust(10) + "#{alumno.puntajeFinal}".ljust(4)
+    end
+  end
+
+  def listarNoIngresantes(listaNoIngresantes)
+    puts ""
+    puts "***************Listado de Alumnos No Ingresantes***************"
+    puts "DNI".ljust(10) + "NOMBRE".ljust(10) + "APELLIDO".ljust(10) + "PUNTAJE"
+    for alumno in listaNoIngresantes
       puts "#{alumno.dni}".ljust(10) + "#{alumno.nombre}".ljust(10) + "#{alumno.apellido}".ljust(10) + "#{alumno.puntajeFinal}".ljust(4)
     end
   end
@@ -391,23 +406,12 @@ class Controlador
     end
   end
 
-  def obtenerResultadosAlumno(dniAlumno)
+  def obtenerResultadosAlumnos
     begin
-      modelo.obtenerResultadosAlumno(dniAlumno)
-      vista.mostrarValido("Resultados del alumno obtenidos exitosamente!")
+      modelo.obtenerResultadosAlumnos
+      vista.mostrarValido("Resultados obtenidos exitosamente!")
     rescue Exception => e 
       vista.mensajeError(e.message)
-    end
-  end
-
-  def obtenerResultadosAlumno
-    for alumno in modelo.listaAlumnos
-      begin
-        modelo.obtenerResultadosAlumno(alumno.dni)
-        vista.mostrarValido("Resultados del alumno obtenidos exitosamente!")
-      rescue Exception => e 
-        vista.mensajeError(e.message)
-      end
     end
   end
 
@@ -417,7 +421,8 @@ class Controlador
   end
 
   def imprimirListadoResultados
-    modelo.obtenerResultadosGenerales
+    obtenerResultadosAlumnos
+
     datos = modelo.listaAlumnos
     vista.listarResultadosGenerales(datos)
   end
@@ -425,6 +430,11 @@ class Controlador
   def imprimirIngresantes
     datos = modelo.listaIngresantes
     vista.listarIngresantes(datos)
+  end
+
+  def imprimirNoIngresantes
+    datos = modelo.listaNoIngresantes
+    vista.listarNoIngresantes(datos)
   end
 
   def imprimirDatosEstudiante(dniAlumno)
@@ -460,26 +470,22 @@ controlador.ingresarRespuestasCorrectas(45, resp1)
 resp2 = Array["a","b","c","a","b","c","a","b","c","a","a","b","c","a","b","c","a","b","c","a"]
 controlador.ingresarRespuestasCorrectas(12, resp2)
 
+#Alumnos rinden el examen
 controlador.alumnoRindeExamen(78945612, 45)
-#controlador.obtenerResultadosAlumno(78945612)
-
 controlador.alumnoRindeExamen(12365478, 12)
-#controlador.obtenerResultadosAlumno(12365478)
-
 controlador.alumnoRindeExamen(65412877, 45)
-#controlador.obtenerResultadosAlumno(65412877)
-
 controlador.alumnoRindeExamen(65412888, 45)
-#controlador.obtenerResultadosAlumno(65412888)
-
 controlador.alumnoRindeExamen(98744113, 45)
-#controlador.obtenerResultadosAlumno(98744113)
 
-controlador.obtenerResultadosGenerales  #Calcula los resultados de todos los alumnos
+#Calcula los resultados de todos los alumnos
+controlador.obtenerResultadosAlumnos
+
+#controlador.obtenerResultadosGenerales
 controlador.imprimirListadoResultados   #Calcula y luego imprime los resultados - esta función incluye la anterior.
 
 controlador.obtenerIngresantes(3)
 controlador.imprimirIngresantes
+controlador.imprimirNoIngresantes
 
 #Primer reporte solicitado
 controlador.imprimirDatosEstudiante(78945612)
