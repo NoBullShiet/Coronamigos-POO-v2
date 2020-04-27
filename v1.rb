@@ -109,13 +109,11 @@ class Examen
     #lógica para recorrer todo el array y asignale una letra aleatoria
     n = examen.numeroPregunta - 1
     for i in 0..n
-      a = ('a'..'f').to_a.sample            #comando para sacar una letra aleatoria a - f (siendo f la respuesta en blanco)
+      a = ('a'..'d').to_a.sample            #comando para sacar una letra aleatoria a - d (siendo d la respuesta en blanco)
       examen.listaRespuestasAlumno[i] = a   #se ingresa la letra aleatoria al array
     end
-
     #puts "#{examen.listaRespuestasAlumno}" #prueba de imprimir el array para ver los resultados del aleatorio
   end
-
 end
 
 class Ministerio
@@ -183,7 +181,7 @@ class Ministerio
 
             #ya tenemos los dos arrays, toca compararlos
             for i in 0..examen.numeroPregunta
-              if examen.listaRespuestasAlumno[i] == "f" #respuesta en blanco
+              if examen.listaRespuestasAlumno[i] == "d" #respuesta en blanco
                 #no hace nada si la respuesta del alumno está en blanco
               elsif examen.listaRespuestasAlumno[i] == examen.listaRespuestasCorrectas[i]
                 respCorrectas += 1    #contabiliza cada respuesta correcta
@@ -192,8 +190,8 @@ class Ministerio
               end
             end
 
-            puts "#{examen.listaRespuestasAlumno}"
-            puts "#{examen.listaRespuestasCorrectas}"
+            #puts "#{examen.listaRespuestasAlumno}"
+            #puts "#{examen.listaRespuestasCorrectas}"
 
             #calculamos el puntaje final
             puntajeEC = (respCorrectas - (respIncorrectas * 0.5)) * factorPuntaje
@@ -347,9 +345,9 @@ controlador.registrarAlumno("AP", 65412877, "Adriana", "Lima", 12, "Femenino", 1
 controlador.registrarExamen("EX", 45, 10)
 controlador.registrarExamen("EX", 12, 20)
 
-resp1 = Array["a","b","c","d","e","a","b","c","d","e"]
+resp1 = Array["a","b","c","a","b","c","a","b","c","a"]
 controlador.ingresarRespuestasCorrectas(45, resp1)
-resp2 = Array["a","b","c","d","e","a","b","c","d","e","a","b","c","d","e","a","b","c","d","e"]
+resp2 = Array["a","b","c","a","b","c","a","b","c","a","a","b","c","a","b","c","a","b","c","a"]
 controlador.ingresarRespuestasCorrectas(12, resp2)
 
 controlador.alumnoRindeExamen(78945612, 45)
