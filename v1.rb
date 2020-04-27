@@ -314,9 +314,9 @@ class Vista
   def listarResultadosGenerales(listaAlumnos)
     puts ""
     puts "***************Listado de Resultados Generales***************"
-    puts "DNI".ljust(10) + "NOMBRE".ljust(10) + "APELLIDO".ljust(10) + "CS".ljust(4) + "RE".ljust(4) + "EC".ljust(6) + "PUNTAJE"
+    puts "DNI".ljust(10) + "NOMBRE".ljust(10) + "APELLIDO".ljust(10) + "CS".ljust(4) + "RE".ljust(4) + "EC".ljust(6) + "PUNTAJE".ljust(8) + "RESULTADO"
     for alumno in listaAlumnos
-      puts "#{alumno.dni}".ljust(10) + "#{alumno.nombre}".ljust(10) + "#{alumno.apellido}".ljust(10) + "#{alumno.CS}".ljust(4) + "#{alumno.RE}".ljust(4) + "#{alumno.EC}".ljust(6) + "#{alumno.puntajeFinal}".ljust(4)
+      puts "#{alumno.dni}".ljust(10) + "#{alumno.nombre}".ljust(10) + "#{alumno.apellido}".ljust(10) + "#{alumno.CS}".ljust(4) + "#{alumno.RE}".ljust(4) + "#{alumno.EC}".ljust(6) + "#{alumno.puntajeFinal}".ljust(8) + "#{alumno.resultado}"
     end
   end
 
@@ -325,7 +325,7 @@ class Vista
     puts "***************Datos Generales de Alumno***************"
     puts "DNI:" + "#{alumno.dni}".ljust(12) + "NOMBRE:" + "#{alumno.nombre}".ljust(12) + "APELLIDO:" + "#{alumno.apellido}"
     puts "EDAD:" + "#{alumno.edad}".ljust(11) + "GENERO:" + "#{alumno.genero}".ljust(12) + "COLEGIO:" + "#{alumno.colegio}"
-    puts "CS:" + "#{alumno.CS}".ljust(8) + "RE:" + "#{alumno.RE}".ljust(8) + "EC:" + "#{alumno.EC}".ljust(10) + "RESULTADO:" + "#{alumno.resultado}"
+    puts "CS:" + "#{alumno.CS}".ljust(5) + "RE:" + "#{alumno.RE}".ljust(5) + "EC:" + "#{alumno.EC}".ljust(5) + "PF:" + "#{alumno.puntajeFinal}".ljust(8) + "RESULTADO:" + "#{alumno.resultado}"
   end
 
   def listarTutores(listaTutores)
@@ -421,9 +421,7 @@ class Controlador
   end
 
   def imprimirListadoResultados
-    obtenerResultadosAlumnos
-
-    datos = modelo.listaAlumnos
+    datos = modelo.ordenarAlumnos
     vista.listarResultadosGenerales(datos)
   end
 
@@ -477,15 +475,12 @@ controlador.alumnoRindeExamen(65412877, 45)
 controlador.alumnoRindeExamen(65412888, 45)
 controlador.alumnoRindeExamen(98744113, 45)
 
-#Calcula los resultados de todos los alumnos
-controlador.obtenerResultadosAlumnos
-
-#controlador.obtenerResultadosGenerales
-controlador.imprimirListadoResultados   #Calcula y luego imprime los resultados - esta función incluye la anterior.
+controlador.obtenerResultadosAlumnos    #Calcula los resultados de todos los alumnos
 
 controlador.obtenerIngresantes(3)
-controlador.imprimirIngresantes
-controlador.imprimirNoIngresantes
+controlador.imprimirListadoResultados   #Imprime los resultados de todos en orden.
+controlador.imprimirIngresantes         #Imprime la lista de ingresantes
+controlador.imprimirNoIngresantes       #Imprime la lsita de no ingresantes
 
 #Primer reporte solicitado
 controlador.imprimirDatosEstudiante(78945612)
