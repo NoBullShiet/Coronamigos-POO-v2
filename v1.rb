@@ -117,6 +117,7 @@ class Ministerio
 	def initialize
 		@listaAlumnos = Array.new
     @listaExamenes = Array.new
+    @listaIngresantes = Array.new
 	end
 
   def registrarAlumno(alumno)
@@ -211,8 +212,14 @@ class Ministerio
     end
   end
 
-  def definirVacantes(cantVacantes)
-    @listarIngresantes = Array.new(cantVacantes)
+  def obtenerIngresantes(cantVacantes)
+    listaTemp = Array.new
+    listaTemp = ordenarAlumnos
+    n = cantVacantes - 1
+    for i in 0..n
+      listaIngresantes.push(listaTemp[i])
+    end
+    #puts "#{listaIngresantes}" #línea de prueba para comprobar que la lista de ingresantes es generada correctamente.
   end
 
   def obtenerResultadosAlumno(dniAlumno)
@@ -226,6 +233,10 @@ class Ministerio
   def validarCantidadRespuestas(examen, respuestas)
     m = respuestas.length
     raise "La cantidad de respuestas no coincide con la cantidad de preguntas del examen." if m != examen.numeroPregunta
+  end
+
+  def ordenarAlumnos
+    listaAlumnos.sort_by{|p| p.puntajeFinal}.reverse
   end
 end
 
@@ -287,8 +298,8 @@ class Controlador
     @modelo = modelo
   end
 
-  def definirVacantes(cantVacantes)
-    modelo.definirVacantes(cantVacantes)
+  def obtenerIngresantes(cantVacantes)
+    modelo.obtenerIngresantes(cantVacantes)
   end
 
   def registrarAlumno(tipo, *arg)
@@ -357,13 +368,16 @@ class Controlador
     datos = modelo.listaAlumnos
     vista.listarResultadosGenerales(datos)
   end
+
+  def imprimirIngresantes
+    datos = modelo.listaIngresantes
+    vista.listarIngresantes(datos)
+  end
 end
 
 minedu = Ministerio.new
 vista = Vista.new
 controlador = Controlador.new(vista, minedu)
-
-controlador.definirVacantes(3)
 
 controlador.registrarAlumno("AP", 78945612, "Andres", "Inope", 15, "Masculino", 1200, 5)
 controlador.registrarAlumno("AN", 12365478, "Paolo", "Guerrero", 10, "Masculino", "RURAL", 15)
@@ -371,9 +385,9 @@ controlador.registrarAlumno("AP", 65412877, "Adriana", "Lima", 12, "Femenino", 1
 controlador.registrarAlumno("AN", 65412888, "Chapo", "Guzman", 8, "Masculino", "RURAL", 14)
 controlador.registrarAlumno("AP", 98744113, "Pablo", "Escobar", 9, "Masculino", 2500, 1)
 
-controlador.registrarTutor("TU", 78945612, 65412382, "German", "Carty", "Padre")
-controlador.registrarTutor("TU", 78945612, 65421555, "Johan", "Solis", "Tio")
-controlador.registrarTutor("TU", 78945612, 65412382, "Frodo", "Arendale", "Tio")
+#controlador.registrarTutor("TU", 78945612, 65412382, "German", "Carty", "Padre")
+#controlador.registrarTutor("TU", 78945612, 65421555, "Johan", "Solis", "Tio")
+#controlador.registrarTutor("TU", 78945612, 65412382, "Frodo", "Arendale", "Tio")
 
 controlador.registrarExamen("EX", 45, 10)
 controlador.registrarExamen("EX", 12, 20)
@@ -399,3 +413,6 @@ controlador.alumnoRindeExamen(98744113, 45)
 controlador.obtenerResultadosAlumno(98744113)
 
 controlador.imprimirListadoResultados
+
+controlador.obtenerIngresantes(3)
+controlador.imprimirIngresantes
