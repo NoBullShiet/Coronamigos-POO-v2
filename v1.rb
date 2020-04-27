@@ -3,7 +3,7 @@
 #Andres Inope
 
 class Alumno
-	attr_accessor :dni, :nombre, :apellido, :edad, :genero, :CS, :RE, :EC, :puntajeFinal, :listaTutores
+	attr_accessor :dni, :nombre, :apellido, :edad, :genero, :CS, :RE, :EC, :puntajeFinal, :listaTutores, :resultado
 	def initialize(dni, nombre, apellido, edad, genero)
   	@dni, @nombre, @apellido, @edad, @genero = dni, nombre, apellido, edad, genero
     @listaTutores = Array.new
@@ -11,11 +11,12 @@ class Alumno
     @RE = 0
     @EC = 0
     @puntajeFinal = 0
+    @resultado = "NO INGRESA"
   end
 end
 
 class AlumnoNacional < Alumno
-	attr_accessor :tipo, :promedio2do
+	attr_accessor :tipo, :promedio2do, :colegio
   def initialize(dni, nombre, apellido, edad, genero, tipo, promedio2do)
  		super(dni, nombre, apellido, edad, genero)
  		@colegio = "NACIONAL"
@@ -51,7 +52,7 @@ class AlumnoNacional < Alumno
 end
 
 class AlumnoParticular < Alumno
-	attr_accessor :pension, :puesto2do
+	attr_accessor :pension, :puesto2do, :colegio
  	def initialize(dni, nombre, apellido, edad, genero, pension, puesto2do)
  		super(dni, nombre, apellido, edad, genero)
  		@colegio = "PARTICULAR"
@@ -123,6 +124,14 @@ class Ministerio
   def registrarAlumno(alumno)
     validarExistenciaAlumno(alumno.dni)
     listaAlumnos.push(alumno)
+  end
+
+  def obtenerAlumno(dniAlumno)
+    for alumno in listaAlumnos
+      if alumno.dni == dniAlumno
+        return alumno
+      end
+    end
   end
 
   def registrarExamen(examen)
@@ -219,6 +228,10 @@ class Ministerio
     for i in 0..n
       listaIngresantes.push(listaTemp[i])
     end
+
+    for alumno in listaIngresantes
+      alumno.resultado = "INGRESA!"
+    end
     #puts "#{listaIngresantes}" #línea de prueba para comprobar que la lista de ingresantes es generada correctamente.
   end
 
@@ -258,6 +271,7 @@ end
 
 class Vista
   def listarDatosGenerales(datos)
+    puts ""
     puts "***************Listado Total - Datos Generales***************"
     puts "DNI".ljust(10) + "NOMBRE".ljust(10) + "APELLIDO".ljust(10) + "EDAD".ljust(5) + "GENERO"
     for alumno in datos
@@ -266,6 +280,7 @@ class Vista
   end
 
   def listarIngresantes(listaIngresantes)
+    puts ""
     puts "***************Listado de Alumnos Ingresantes***************"
     puts "DNI".ljust(10) + "NOMBRE".ljust(10) + "APELLIDO".ljust(10) + "PUNTAJE"
     for alumno in listaIngresantes
@@ -274,11 +289,18 @@ class Vista
   end
 
   def listarResultadosGenerales(listaAlumnos)
+    puts ""
     puts "***************Listado de Resultados Generales***************"
     puts "DNI".ljust(10) + "NOMBRE".ljust(10) + "APELLIDO".ljust(10) + "CS".ljust(4) + "RE".ljust(4) + "EC".ljust(6) + "PUNTAJE"
     for alumno in listaAlumnos
       puts "#{alumno.dni}".ljust(10) + "#{alumno.nombre}".ljust(10) + "#{alumno.apellido}".ljust(10) + "#{alumno.CS}".ljust(4) + "#{alumno.RE}".ljust(4) + "#{alumno.EC}".ljust(6) + "#{alumno.puntajeFinal}".ljust(4)
     end
+  end
+
+  def listarDatosEstudiante(alumno)
+    puts ""
+    puts "***************Datos Generales de Alumno***************"
+    puts "DNI:" + "#{alumno.dni}".ljust(9) + "NOMBRE:" + "#{alumno.nombre}".ljust(9) + "APELLIDO:" + "#{alumno.apellido}".ljust(9) + "COLEGIO:" + "#{alumno.colegio}"
   end
 
   def mensajeError(m)
@@ -373,6 +395,11 @@ class Controlador
     datos = modelo.listaIngresantes
     vista.listarIngresantes(datos)
   end
+
+  def imprimirDatosEstudiante(dniAlumno)
+    alumno = modelo.obtenerAlumno(dniAlumno)
+    vista.listarDatosEstudiante(alumno)
+  end
 end
 
 minedu = Ministerio.new
@@ -416,3 +443,5 @@ controlador.imprimirListadoResultados
 
 controlador.obtenerIngresantes(3)
 controlador.imprimirIngresantes
+
+controlador.imprimirDatosEstudiante(78945612)
