@@ -3,15 +3,16 @@
 #Andres Inope
 
 class Alumno
-	attr_accessor :dni, :nombre, :apellido, :edad, :genero, :CS, :RE, :EC, :puntajeFinal
+	attr_accessor :dni, :nombre, :apellido, :edad, :genero, :CS, :RE, :EC, :puntajeFinal, :listaTutores
 	def initialize(dni, nombre, apellido, edad, genero)
   	@dni, @nombre, @apellido, @edad, @genero = dni, nombre, apellido, edad, genero
-    @listaTutores = Array.new(2)
+    @listaTutores = Array.new
     @CS = 0
     @RE = 0
     @EC = 0
     @puntajeFinal = 0
   end
+
 end
 
 class AlumnoNacional < Alumno
@@ -87,14 +88,10 @@ class AlumnoParticular < Alumno
 end
 
 class Tutor
-	attr_accessor :dniAlumno, :dni, :nombre, :apellido, :parentesco
-	def initialize(dniAlumno, dni, nombre, apellido, parentesco)
-		@dniAlumno, @dni, @nombre, @apellido, @parentesco = dniAlumno, dni, nombre, apellido, parentesco
+	attr_accessor :dniAlumno, :dniTutor, :nombre, :apellido, :parentesco
+	def initialize(dniAlumno, dniTutor, nombre, apellido, parentesco)
+		@dniAlumno, @dniTutor, @nombre, @apellido, @parentesco = dniAlumno, dniTutor, nombre, apellido, parentesco
 	end
-
-  def registrarTutor(alumno)
-    return nil
-  end
 end
 
 class Examen
@@ -132,6 +129,16 @@ class Ministerio
   def registrarExamen(examen)
     validarExistenciaExamen(examen.codigoEvaluacion)
     listaExamenes.push(examen)
+  end
+
+  def registrarTutor(tutor)
+    for alumno in listaAlumnos  #busca el alumno que le corresponde al tutor
+      if alumno.dni == tutor.dniAlumno
+        n = listaTutores.length
+        raise "El alumno ya cuenta con 2 tutores registrados." if n == 2  #comprueba que el alumno no tenga más de dos tutores
+        alumno.listaTutores.push(tutor)
+      end
+    end
   end
 
   def validarExistenciaAlumno(dni)
@@ -229,6 +236,8 @@ class Factoria
       AlumnoParticular.new(arg[0], arg[1], arg[2], arg[3], arg[4], arg[5],arg[6])
     when "EX"
       Examen.new(arg[0], arg[1])
+    when "TU"
+      Tutor.new(arg[0], arg[1], arg[2], arg[3], arg[4], arg[5])
     end
   end
 end
@@ -291,6 +300,16 @@ class Controlador
     begin
       modelo.registrarExamen(ex)
       vista.mostrarValido("Examen registrado exitosamente!")
+    rescue Exception => e 
+      vista.mensajeError(e.message)
+    end
+  end
+
+  def registrarTutor(tipo, *arg)
+    tut = Factoria.dameObjeto(tipo, *arg)
+    begin
+      modelo.registrarTutor(tut)
+      vista.mostrarValido("Tutor registrado exitosamente!")
     rescue Exception => e 
       vista.mensajeError(e.message)
     end
