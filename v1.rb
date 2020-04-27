@@ -149,6 +149,14 @@ class Ministerio
     end
   end
 
+  def obtenerTutores(dniAlumno)
+    for alumno in listaAlumnos
+      if alumno.dni == dniAlumno
+        return alumno.listaTutores
+      end
+    end
+  end
+
   def validarExistenciaAlumno(dni)
     for alumno in listaAlumnos
       raise "El alumno ya ha sido registrado." if alumno.dni == dni
@@ -303,7 +311,15 @@ class Vista
     puts "DNI:" + "#{alumno.dni}".ljust(12) + "NOMBRE:" + "#{alumno.nombre}".ljust(12) + "APELLIDO:" + "#{alumno.apellido}"
     puts "EDAD:" + "#{alumno.edad}".ljust(11) + "GENERO:" + "#{alumno.genero}".ljust(12) + "COLEGIO:" + "#{alumno.colegio}"
     puts "CS:" + "#{alumno.CS}".ljust(8) + "RE:" + "#{alumno.RE}".ljust(8) + "EC:" + "#{alumno.EC}".ljust(10) + "RESULTADO:" + "#{alumno.resultado}"
+  end
 
+  def listarTutores(listaTutores)
+    puts ""
+    puts "***************Datos de los Tutores del Alumno***************"
+    puts "DNI ALUMNO".ljust(12) + "DNI".ljust(10) + "NOMBRE".ljust(10) + "APELLIDO".ljust(10) + "PARENTESCO"
+    for tutor in listaTutores
+      puts "#{tutor.dniAlumno}".ljust(12) + "#{tutor.dniTutor}".ljust(10) + "#{tutor.nombre}".ljust(10) + "#{tutor.apellido}".ljust(10) + "#{tutor.parentesco}"
+    end
   end
 
   def mensajeError(m)
@@ -384,12 +400,24 @@ class Controlador
     end
   end
 
-  def imprimirListado
+  def obtenerResultadosAlumno
+    for alumno in modelo.listaAlumnos
+      begin
+        modelo.obtenerResultadosAlumno(alumno.dni)
+        vista.mostrarValido("Resultados del alumno obtenidos exitosamente!")
+      rescue Exception => e 
+        vista.mensajeError(e.message)
+      end
+    end
+  end
+
+  def imprimirListado   #General
     datos = modelo.listaAlumnos
     vista.listarDatosGenerales(datos)
   end
 
   def imprimirListadoResultados
+    modelo.obtenerResultadosGenerales
     datos = modelo.listaAlumnos
     vista.listarResultadosGenerales(datos)
   end
@@ -402,6 +430,11 @@ class Controlador
   def imprimirDatosEstudiante(dniAlumno)
     alumno = modelo.obtenerAlumno(dniAlumno)
     vista.listarDatosEstudiante(alumno)
+  end
+
+  def imprimirTutores(dniAlumno)
+    datos = modelo.obtenerTutores(dniAlumno)
+    vista.listarTutores(datos)    
   end
 end
 
@@ -417,7 +450,7 @@ controlador.registrarAlumno("AP", 98744113, "Pablo", "Escobar", 9, "Masculino", 
 
 controlador.registrarTutor("TU", 78945612, 65412382, "German", "Carty", "Padre")
 controlador.registrarTutor("TU", 78945612, 65421555, "Johan", "Solis", "Tio")
-controlador.registrarTutor("TU", 78945612, 65412382, "Frodo", "Arendale", "Tio")
+controlador.registrarTutor("TU", 98744113, 65412382, "Frodo", "Arendale", "Tio")
 
 controlador.registrarExamen("EX", 45, 10)
 controlador.registrarExamen("EX", 12, 20)
@@ -428,24 +461,29 @@ resp2 = Array["a","b","c","a","b","c","a","b","c","a","a","b","c","a","b","c","a
 controlador.ingresarRespuestasCorrectas(12, resp2)
 
 controlador.alumnoRindeExamen(78945612, 45)
-controlador.obtenerResultadosAlumno(78945612)
+#controlador.obtenerResultadosAlumno(78945612)
 
 controlador.alumnoRindeExamen(12365478, 12)
-controlador.obtenerResultadosAlumno(12365478)
+#controlador.obtenerResultadosAlumno(12365478)
 
 controlador.alumnoRindeExamen(65412877, 45)
-controlador.obtenerResultadosAlumno(65412877)
+#controlador.obtenerResultadosAlumno(65412877)
 
 controlador.alumnoRindeExamen(65412888, 45)
-controlador.obtenerResultadosAlumno(65412888)
+#controlador.obtenerResultadosAlumno(65412888)
 
 controlador.alumnoRindeExamen(98744113, 45)
-controlador.obtenerResultadosAlumno(98744113)
+#controlador.obtenerResultadosAlumno(98744113)
 
-controlador.imprimirListadoResultados
+controlador.obtenerResultadosGenerales  #Calcula los resultados de todos los alumnos
+controlador.imprimirListadoResultados   #Calcula y luego imprime los resultados - esta función incluye la anterior.
 
 controlador.obtenerIngresantes(3)
 controlador.imprimirIngresantes
 
+#Primer reporte solicitado
 controlador.imprimirDatosEstudiante(78945612)
 controlador.imprimirDatosEstudiante(12365478)
+#Segundo reporte solicitado
+controlador.imprimirTutores(78945612)
+controlador.imprimirTutores(98744113)
