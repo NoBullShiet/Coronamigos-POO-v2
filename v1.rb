@@ -300,7 +300,10 @@ class Vista
   def listarDatosEstudiante(alumno)
     puts ""
     puts "***************Datos Generales de Alumno***************"
-    puts "DNI:" + "#{alumno.dni}".ljust(9) + "NOMBRE:" + "#{alumno.nombre}".ljust(9) + "APELLIDO:" + "#{alumno.apellido}".ljust(9) + "COLEGIO:" + "#{alumno.colegio}"
+    puts "DNI:" + "#{alumno.dni}".ljust(12) + "NOMBRE:" + "#{alumno.nombre}".ljust(12) + "APELLIDO:" + "#{alumno.apellido}"
+    puts "EDAD:" + "#{alumno.edad}".ljust(11) + "GENERO:" + "#{alumno.genero}".ljust(12) + "COLEGIO:" + "#{alumno.colegio}"
+    puts "CS:" + "#{alumno.CS}".ljust(8) + "RE:" + "#{alumno.RE}".ljust(8) + "EC:" + "#{alumno.EC}".ljust(10) + "RESULTADO:" + "#{alumno.resultado}"
+
   end
 
   def mensajeError(m)
@@ -412,9 +415,9 @@ controlador.registrarAlumno("AP", 65412877, "Adriana", "Lima", 12, "Femenino", 1
 controlador.registrarAlumno("AN", 65412888, "Chapo", "Guzman", 8, "Masculino", "RURAL", 14)
 controlador.registrarAlumno("AP", 98744113, "Pablo", "Escobar", 9, "Masculino", 2500, 1)
 
-#controlador.registrarTutor("TU", 78945612, 65412382, "German", "Carty", "Padre")
-#controlador.registrarTutor("TU", 78945612, 65421555, "Johan", "Solis", "Tio")
-#controlador.registrarTutor("TU", 78945612, 65412382, "Frodo", "Arendale", "Tio")
+controlador.registrarTutor("TU", 78945612, 65412382, "German", "Carty", "Padre")
+controlador.registrarTutor("TU", 78945612, 65421555, "Johan", "Solis", "Tio")
+controlador.registrarTutor("TU", 78945612, 65412382, "Frodo", "Arendale", "Tio")
 
 controlador.registrarExamen("EX", 45, 10)
 controlador.registrarExamen("EX", 12, 20)
@@ -445,3 +448,4 @@ controlador.obtenerIngresantes(3)
 controlador.imprimirIngresantes
 
 controlador.imprimirDatosEstudiante(78945612)
+controlador.imprimirDatosEstudiante(12365478)
