@@ -114,7 +114,7 @@ class Examen
 end
 
 class Ministerio
-  attr_accessor :listaAlumnos, :listaExamenes, :listaIngresantes, :listaNoIngresantes, :cantPostulanteMasculino, :cantPostulanteFemenino, :cantIngresanteMasculino, :cantIngresanteFemenino, :ingresanteCN, :ingresanteCP, :noIngresanteCN, :noIngresanteCP
+  attr_accessor :listaAlumnos, :listaExamenes, :listaIngresantes, :listaNoIngresantes
 	def initialize
     #Arrays para toda la lógica
 		@listaAlumnos = Array.new
@@ -129,9 +129,9 @@ class Ministerio
   def obtenerPostulantesGenero
     for alumno in listaAlumnos
       if alumno.genero == "Masculino"
-        cantPostulanteMasculino += 1
+        @cantPostulanteMasculino += 1
       elsif alumno.genero == "Femenino"
-        cantPostulanteFemenino += 1
+        @cantPostulanteFemenino += 1
       else
         #No hace nada.
       end
@@ -141,9 +141,9 @@ class Ministerio
   def obtenerIngresantesGenero
     for alumno in listaIngresantes
       if alumno.genero == "Masculino"
-        cantIngresanteMasculino += 1
+        @cantIngresanteMasculino += 1
       elsif alumno.genero == "Femenino"
-        cantIngresanteFemenino += 1
+        @cantIngresanteFemenino += 1
       else
         #No hace nada.
       end
@@ -153,9 +153,9 @@ class Ministerio
   def obtenerNoIngresantesGenero
     for alumno in listaNoIngresantes
       if alumno.genero == "Masculino"
-        cantNoIngresanteMasculino += 1
+        @cantNoIngresanteMasculino += 1
       elsif alumno.genero == "Femenino"
-        cantNoIngresanteFemenino += 1
+        @cantNoIngresanteFemenino += 1
       else
         #No hace nada.
       end
@@ -163,37 +163,42 @@ class Ministerio
   end
 
   def obtenerIngresantesColegio
+    a = b = 0
+    c = listaIngresantes.length
+
     for alumno in listaIngresantes
       if alumno.colegio == "NACIONAL"
-        ingresanteCN += 1
+        a += 1
       elsif alumno.colegio == "PARTICULAR"
-        ingresanteCP += 1
+        b += 1
       else
         #No hace nada.
       end
     end
-    temp1 = ingresanteCN
-    ingresanteCN = temp1 / listaIngresantes.length * 100
 
-    temp2 = ingresanteCP
-    ingresanteCP = temp2 / listaIngresantes.length * 100
+    ingresanteCN = a.to_f / c.to_f * 100.0
+
+    ingresanteCP = b.to_f / c.to_f * 100.0
   end
 
   def obtenerNoIngresantesColegio
+    a = b = 0
+    c = listaNoIngresantes.length
+
     for alumno in listaNoIngresantes
       if alumno.colegio == "NACIONAL"
-        noIngresanteCN += 1
+        a += 1
       elsif alumno.colegio == "PARTICULAR"
-        noIngresanteCP += 1
+        b += 1
       else
         #No hace nada.
       end
     end
-    temp1 = noIngresanteCN
-    noIngresanteCN = temp1 / listaNoIngresantes.length * 100
 
-    temp2 = noIngresanteCP
-    noIngresanteCP = temp2 / listaNoIngresantes.length * 100
+    noIngresanteCN = a.to_f / c.to_f * 100.0
+
+    noIngresanteCP = b.to_f / c.to_f * 100.0
+    
   end
 
   def obtenerEstadisticas
@@ -203,7 +208,7 @@ class Ministerio
     obtenerIngresantesColegio
     obtenerNoIngresantesColegio
 
-    return cantPostulanteMasculino, cantPostulanteFemenino, cantIngresanteMasculino, cantIngresanteFemenino, cantNoIngresanteMasculino, cantNoIngresanteFemenino, ingresanteCN, ingresanteCP, noIngresanteCN, noIngresanteCP
+    return @cantPostulanteMasculino, @cantPostulanteFemenino, @cantIngresanteMasculino, @cantIngresanteFemenino, @cantNoIngresanteMasculino, @cantNoIngresanteFemenino, @ingresanteCN, @ingresanteCP, @noIngresanteCN, @noIngresanteCP
   end
 
   def registrarAlumno(alumno)
@@ -424,11 +429,11 @@ class Vista
   def listarEstadisticas(datos)
     puts ""
     puts "***************Datos Estadísticos del Proceso de Admisión***************"
-    puts "Cantidad de Postulantes por Género. Masculinos: " + datos[0].to_s.ljust(4) + "Femeninos: " + datos[1].to_s
-    puts "Cantidad de Ingresantes por Género. Masculinos: " + datos[2].to_s.ljust(4) + "Femeninos: " + datos[3].to_s
-    puts "Cantidad de No Ingresantes por Género. Masculinos: " + datos[4].to_s.ljust(4) + "Femeninos: " + datos[5].to_s
-    puts "Porcentaje de los ingresantes por tipo de Colegio. Nacional: " + datos[6].to_s.ljust(4) + "Femeninos: " + datos[7].to_s
-    puts "Porcentaje de los no ingresantes por tipo de Colegio. Nacional: " + datos[8].to_s.ljust(4) + "Femeninos: " + datos[9].to_s
+    puts "Cantidad de Postulantes por Género:    Masculinos: " + datos[0].to_s.ljust(4) + "Femeninos: " + datos[1].to_s
+    puts "Cantidad de Ingresantes por Género:    Masculinos: " + datos[2].to_s.ljust(4) + "Femeninos: " + datos[3].to_s
+    puts "Cantidad de No Ingresantes por Género: Masculinos: " + datos[4].to_s.ljust(4) + "Femeninos: " + datos[5].to_s
+    puts "Porcentaje ingresantes por tipo de Colegio.    Nacional: " + datos[6].to_s.ljust(4) + "Particular: " + datos[7].to_s
+    puts "Porcentaje no ingresantes por tipo de Colegio. Nacional: " + datos[8].to_s.ljust(4) + "Particular: " + datos[9].to_s
   end
 
   def mensajeError(m)
