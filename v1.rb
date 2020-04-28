@@ -135,9 +135,21 @@ class Ministerio
     end
   end
 
+  def validarExistenciaAlumno(dni)
+    for alumno in listaAlumnos
+      raise "El alumno ya ha sido registrado." if alumno.dni == dni
+    end
+  end
+
   def registrarExamen(examen)
     validarExistenciaExamen(examen.codigoEvaluacion)
     listaExamenes.push(examen)
+  end
+
+  def validarExistenciaExamen(codigoEvaluacion)
+    for examen in listaExamenes
+      raise "El examen ya ha sido registrado." if examen.codigoEvaluacion == codigoEvaluacion
+    end
   end
 
   def registrarTutor(tutor)
@@ -155,18 +167,6 @@ class Ministerio
       if alumno.dni == dniAlumno
         return alumno.listaTutores
       end
-    end
-  end
-
-  def validarExistenciaAlumno(dni)
-    for alumno in listaAlumnos
-      raise "El alumno ya ha sido registrado." if alumno.dni == dni
-    end
-  end
-
-  def validarExistenciaExamen(codigoEvaluacion)
-    for examen in listaExamenes
-      raise "El examen ya ha sido registrado." if examen.codigoEvaluacion == codigoEvaluacion
     end
   end
 
@@ -444,6 +444,10 @@ class Controlador
     datos = modelo.obtenerTutores(dniAlumno)
     vista.listarTutores(datos)    
   end
+
+  def imprimirEstadisticas
+    
+  end
 end
 
 minedu = Ministerio.new
@@ -488,3 +492,6 @@ controlador.imprimirDatosEstudiante(12365478)
 #Segundo reporte solicitado
 controlador.imprimirTutores(78945612)
 controlador.imprimirTutores(98744113)
+
+#Reporte estadístico
+controlador.imprimirEstadisticas
