@@ -114,13 +114,97 @@ class Examen
 end
 
 class Ministerio
-  attr_accessor :listaAlumnos, :listaExamenes, :listaIngresantes, :listaNoIngresantes
+  attr_accessor :listaAlumnos, :listaExamenes, :listaIngresantes, :listaNoIngresantes, :cantPostulanteMasculino, :cantPostulanteFemenino, :cantIngresanteMasculino, :cantIngresanteFemenino, :ingresanteCN, :ingresanteCP, :noIngresanteCN, :noIngresanteCP
 	def initialize
+    #Arrays para toda la lógica
 		@listaAlumnos = Array.new
     @listaExamenes = Array.new
     @listaIngresantes = Array.new
     @listaNoIngresantes = Array.new
+    #Variables para estadísticas
+    @cantPostulanteMasculino = @cantPostulanteFemenino = @cantIngresanteMasculino = @cantIngresanteFemenino = @cantNoIngresanteMasculino = @cantNoIngresanteFemenino = 0
+    @ingresanteCN = @ingresanteCP = @noIngresanteCN = @noIngresanteCP = 0
 	end
+
+  def obtenerPostulantesGenero
+    for alumno in listaAlumnos
+      if alumno.genero == "Masculino"
+        cantPostulanteMasculino += 1
+      elsif alumno.genero == "Femenino"
+        cantPostulanteFemenino += 1
+      else
+        #No hace nada.
+      end
+    end
+  end
+
+  def obtenerIngresantesGenero
+    for alumno in listaIngresantes
+      if alumno.genero == "Masculino"
+        cantIngresanteMasculino += 1
+      elsif alumno.genero == "Femenino"
+        cantIngresanteFemenino += 1
+      else
+        #No hace nada.
+      end
+    end
+  end
+
+  def obtenerNoIngresantesGenero
+    for alumno in listaNoIngresantes
+      if alumno.genero == "Masculino"
+        cantNoIngresanteMasculino += 1
+      elsif alumno.genero == "Femenino"
+        cantNoIngresanteFemenino += 1
+      else
+        #No hace nada.
+      end
+    end
+  end
+
+  def obtenerIngresantesColegio
+    for alumno in listaIngresantes
+      if alumno.colegio == "NACIONAL"
+        ingresanteCN += 1
+      elsif alumno.colegio == "PARTICULAR"
+        ingresanteCP += 1
+      else
+        #No hace nada.
+      end
+    end
+    temp1 = ingresanteCN
+    ingresanteCN = temp1 / listaIngresantes.length * 100
+
+    temp2 = ingresanteCP
+    ingresanteCP = temp2 / listaIngresantes.length * 100
+  end
+
+  def obtenerNoIngresantesColegio
+    for alumno in listaNoIngresantes
+      if alumno.colegio == "NACIONAL"
+        noIngresanteCN += 1
+      elsif alumno.colegio == "PARTICULAR"
+        noIngresanteCP += 1
+      else
+        #No hace nada.
+      end
+    end
+    temp1 = noIngresanteCN
+    noIngresanteCN = temp1 / listaNoIngresantes.length * 100
+
+    temp2 = noIngresanteCP
+    noIngresanteCP = temp2 / listaNoIngresantes.length * 100
+  end
+
+  def obtenerEstadisticas
+    obtenerPostulantesGenero
+    obtenerIngresantesGenero
+    obtenerNoIngresantesGenero
+    obtenerIngresantesColegio
+    obtenerNoIngresantesColegio
+
+    return cantPostulanteMasculino, cantPostulanteFemenino, cantIngresanteMasculino, cantIngresanteFemenino, cantNoIngresanteMasculino, cantNoIngresanteFemenino, ingresanteCN, ingresanteCP, noIngresanteCN, noIngresanteCP
+  end
 
   def registrarAlumno(alumno)
     validarExistenciaAlumno(alumno.dni)
@@ -455,10 +539,10 @@ vista = Vista.new
 controlador = Controlador.new(vista, minedu)
 
 controlador.registrarAlumno("AP", 78945612, "Andres", "Inope", 15, "Masculino", 1200, 5)
-controlador.registrarAlumno("AN", 12365478, "Paolo", "Guerrero", 10, "Masculino", "RURAL", 15)
+controlador.registrarAlumno("AN", 12365478, "Paolo", "Guerrero", 11, "Masculino", "RURAL", 15)
 controlador.registrarAlumno("AP", 65412877, "Adriana", "Lima", 12, "Femenino", 1800, 8)
-controlador.registrarAlumno("AN", 65412888, "Chapo", "Guzman", 8, "Masculino", "RURAL", 14)
-controlador.registrarAlumno("AP", 98744113, "Pablo", "Escobar", 9, "Masculino", 2500, 1)
+controlador.registrarAlumno("AN", 65412888, "Chapo", "Guzman", 13, "Masculino", "RURAL", 14)
+controlador.registrarAlumno("AP", 98744113, "Pablo", "Escobar", 11, "Masculino", 2500, 1)
 
 controlador.registrarTutor("TU", 78945612, 65412382, "German", "Carty", "Padre")
 controlador.registrarTutor("TU", 78945612, 65421555, "Johan", "Solis", "Tio")
