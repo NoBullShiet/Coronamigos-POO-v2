@@ -114,7 +114,7 @@ class Examen
 end
 
 class Ministerio
-  attr_accessor :listaAlumnos, :listaExamenes, :listaIngresantes, :listaNoIngresantes
+  attr_accessor :listaAlumnos, :listaExamenes, :listaIngresantes, :listaNoIngresantes, :listaDatosEstadisticos
 	def initialize
     #Arrays para toda la lógica
 		@listaAlumnos = Array.new
@@ -122,44 +122,57 @@ class Ministerio
     @listaIngresantes = Array.new
     @listaNoIngresantes = Array.new
     #Variables para estadísticas
-    @cantPostulanteMasculino = @cantPostulanteFemenino = @cantIngresanteMasculino = @cantIngresanteFemenino = @cantNoIngresanteMasculino = @cantNoIngresanteFemenino = 0
-    @ingresanteCN = @ingresanteCP = @noIngresanteCN = @noIngresanteCP = 0
+    @listaDatosEstadisticos = Array.new(10)
+    #cantPostulanteMasculino, cantPostulanteFemenino, cantIngresanteMasculino, cantIngresanteFemenino, cantNoIngresanteMasculino, cantNoIngresanteFemenino
+    #ingresanteCN, ingresanteCP, noIngresanteCN, noIngresanteCP
 	end
 
   def obtenerPostulantesGenero
+    a = b = 0
     for alumno in listaAlumnos
       if alumno.genero == "Masculino"
-        @cantPostulanteMasculino += 1
+        a += 1
       elsif alumno.genero == "Femenino"
-        @cantPostulanteFemenino += 1
+        b += 1
       else
         #No hace nada.
       end
     end
+
+    listaDatosEstadisticos[0] = a
+    listaDatosEstadisticos[1] = b
   end
 
   def obtenerIngresantesGenero
+    a = b = 0
     for alumno in listaIngresantes
       if alumno.genero == "Masculino"
-        @cantIngresanteMasculino += 1
+        a += 1
       elsif alumno.genero == "Femenino"
-        @cantIngresanteFemenino += 1
+        b += 1
       else
         #No hace nada.
       end
     end
+
+    listaDatosEstadisticos[2] = a
+    listaDatosEstadisticos[3] = b
   end
 
   def obtenerNoIngresantesGenero
+    a = b = 0
     for alumno in listaNoIngresantes
       if alumno.genero == "Masculino"
-        @cantNoIngresanteMasculino += 1
+        a += 1
       elsif alumno.genero == "Femenino"
-        @cantNoIngresanteFemenino += 1
+        b += 1
       else
         #No hace nada.
       end
     end
+
+    listaDatosEstadisticos[4] = a
+    listaDatosEstadisticos[5] = b
   end
 
   def obtenerIngresantesColegio
@@ -176,9 +189,8 @@ class Ministerio
       end
     end
 
-    ingresanteCN = a.to_f / c.to_f * 100.0
-
-    ingresanteCP = b.to_f / c.to_f * 100.0
+    listaDatosEstadisticos[6] = (a.to_f / c.to_f * 100.0).round(2)
+    listaDatosEstadisticos[7] = (b.to_f / c.to_f * 100.0).round(2)
   end
 
   def obtenerNoIngresantesColegio
@@ -195,10 +207,8 @@ class Ministerio
       end
     end
 
-    noIngresanteCN = a.to_f / c.to_f * 100.0
-
-    noIngresanteCP = b.to_f / c.to_f * 100.0
-    
+    listaDatosEstadisticos[8] = (a.to_f / c.to_f * 100.0).round(2)
+    listaDatosEstadisticos[9] = (b.to_f / c.to_f * 100.0).round(2)
   end
 
   def obtenerEstadisticas
@@ -208,7 +218,7 @@ class Ministerio
     obtenerIngresantesColegio
     obtenerNoIngresantesColegio
 
-    return @cantPostulanteMasculino, @cantPostulanteFemenino, @cantIngresanteMasculino, @cantIngresanteFemenino, @cantNoIngresanteMasculino, @cantNoIngresanteFemenino, @ingresanteCN, @ingresanteCP, @noIngresanteCN, @noIngresanteCP
+    return listaDatosEstadisticos
   end
 
   def registrarAlumno(alumno)
@@ -432,8 +442,8 @@ class Vista
     puts "Cantidad de Postulantes por Género:    Masculinos: " + datos[0].to_s.ljust(4) + "Femeninos: " + datos[1].to_s
     puts "Cantidad de Ingresantes por Género:    Masculinos: " + datos[2].to_s.ljust(4) + "Femeninos: " + datos[3].to_s
     puts "Cantidad de No Ingresantes por Género: Masculinos: " + datos[4].to_s.ljust(4) + "Femeninos: " + datos[5].to_s
-    puts "Porcentaje ingresantes por tipo de Colegio.    Nacional: " + datos[6].to_s.ljust(4) + "Particular: " + datos[7].to_s
-    puts "Porcentaje no ingresantes por tipo de Colegio. Nacional: " + datos[8].to_s.ljust(4) + "Particular: " + datos[9].to_s
+    puts "Porcentaje ingresantes por tipo de Colegio.    Nacional: " + "#{datos[6].to_s}%".ljust(8) + "Particular: " + datos[7].to_s + "%"
+    puts "Porcentaje no ingresantes por tipo de Colegio. Nacional: " + "#{datos[8].to_s}%".ljust(8) + "Particular: " + datos[9].to_s + "%"
   end
 
   def mensajeError(m)
