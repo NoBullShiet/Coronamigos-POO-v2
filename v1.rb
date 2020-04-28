@@ -421,6 +421,16 @@ class Vista
     end
   end
 
+  def listarEstadisticas(datos)
+    puts ""
+    puts "***************Datos Estadísticos del Proceso de Admisión***************"
+    puts "Cantidad de Postulantes por Género. Masculinos: " + datos[0].to_s.ljust(4) + "Femeninos: " + datos[1].to_s
+    puts "Cantidad de Ingresantes por Género. Masculinos: " + datos[2].to_s.ljust(4) + "Femeninos: " + datos[3].to_s
+    puts "Cantidad de No Ingresantes por Género. Masculinos: " + datos[4].to_s.ljust(4) + "Femeninos: " + datos[5].to_s
+    puts "Porcentaje de los ingresantes por tipo de Colegio. Nacional: " + datos[6].to_s.ljust(4) + "Femeninos: " + datos[7].to_s
+    puts "Porcentaje de los no ingresantes por tipo de Colegio. Nacional: " + datos[8].to_s.ljust(4) + "Femeninos: " + datos[9].to_s
+  end
+
   def mensajeError(m)
     puts "Error: #{m}"
   end
@@ -530,7 +540,8 @@ class Controlador
   end
 
   def imprimirEstadisticas
-    
+    datos = modelo.obtenerEstadisticas
+    vista.listarEstadisticas(datos)
   end
 end
 
