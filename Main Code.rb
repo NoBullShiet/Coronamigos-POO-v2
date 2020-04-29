@@ -91,8 +91,29 @@ class Examen
 	attr_accessor :codigoEvaluacion, :numeroPregunta, :listaRespuestasAlumno, :listaRespuestasCorrectas
 	def initialize(codigoEvaluacion, numeroPregunta)
 		@codigoEvaluacion, @numeroPregunta = codigoEvaluacion, numeroPregunta
-    @listaRespuestasAlumno = Array.new(numeroPregunta)
-    @listaRespuestasCorrectas = Array.new(numeroPregunta)
+    		@listaRespuestasAlumno = Array.new(numeroPregunta)
+    		@listaRespuestasCorrectas = Array.new(numeroPregunta)
+	end
+	
+	def simularResultados(examen)
+    		#lógica para recorrer todo el array y asignale una letra aleatoria
+    		n = examen.numeroPregunta - 1
+    		for i in 0..n
+      			a = ('a'..'d').to_a.sample            #comando para sacar una letra aleatoria a - d (siendo d la respuesta en blanco)
+      			examen.listaRespuestasAlumno[i] = a   #se ingresa la letra aleatoria al array
+    		end
+    		#puts "#{examen.listaRespuestasAlumno}" #prueba de imprimir el array para ver los resultados del aleatorio
+  		end
+end
+
+class Ministerio
+  attr_accessor :listaAlumnos, :listaExamenes, :listaIngresantes, :listaNoIngresantes
+	def initialize
+    		#Arrays para toda la lógica
+		@listaAlumnos = Array.new
+    		@listaExamenes = Array.new
+    		@listaIngresantes = Array.new
+    		@listaNoIngresantes = Array.new
 	end
 	
 end
