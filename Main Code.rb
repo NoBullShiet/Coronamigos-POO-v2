@@ -5,6 +5,11 @@ class Alumno
 	attr_accessor :dni, :nombre, :apellido, :edad, :genero, :CS, :RE, :EC, :puntajeFinal, :listaTutores, :resultado
 	def initialize(dni, nombre, apellido, edad, genero)
   	@dni, @nombre, @apellido, @edad, @genero = dni, nombre, apellido, edad, genero
+	@CS = 0
+    	@RE = 0
+    	@EC = 0
+    	@puntajeFinal = 0
+    	@resultado = "NO INGRESA"
   end
 end
 
@@ -96,37 +101,172 @@ class Examen
 	end
 	
 	def simularResultados(examen)
-    #lógica para recorrer todo el array y asignale una letra aleatoria
-    n = examen.numeroPregunta - 1
-    for i in 0..n
-    	a = ('a'..'d').to_a.sample            #comando para sacar una letra aleatoria a - d (siendo d la respuesta en blanco)
-    	examen.listaRespuestasAlumno[i] = a   #se ingresa la letra aleatoria al array
-    end
-    #puts "#{examen.listaRespuestasAlumno}" #prueba de imprimir el array para ver los resultados del aleatorio
-  end
+    		#lógica para recorrer todo el array y asignale una letra aleatoria
+    		n = examen.numeroPregunta - 1
+    		for i in 0..n
+    			a = ('a'..'d').to_a.sample            #comando para sacar una letra aleatoria a - d (siendo d la respuesta en blanco)
+    			examen.listaRespuestasAlumno[i] = a   #se ingresa la letra aleatoria al array
+    		end
+    		#puts "#{examen.listaRespuestasAlumno}" #prueba de imprimir el array para ver los resultados del aleatorio
+  	end
 end
 
 class Ministerio
-  attr_accessor :listaAlumnos, :listaExamenes, :listaIngresantes, :listaNoIngresantes
+  attr_accessor :listaAlumnos, :listaExamenes, :listaIngresantes, :listaNoIngresantes, :listaDatosEstadisticos
 	def initialize
     #Arrays para toda la lógica
 		@listaAlumnos = Array.new
     @listaExamenes = Array.new
     @listaIngresantes = Array.new
     @listaNoIngresantes = Array.new
+    #Variables para estadísticas
+    @listaDatosEstadisticos = Array.new(10)
+    #cantPostulanteMasculino, cantPostulanteFemenino, cantIngresanteMasculino, cantIngresanteFemenino, cantNoIngresanteMasculino, cantNoIngresanteFemenino
+    #ingresanteCN, ingresanteCP, noIngresanteCN, noIngresanteCP
 	end
 	
-	def registrarAlumno(alumno)
-  	validarExistenciaAlumno(alumno.dni)
-  	listaAlumnos.push(alumno)
+  def obtenerPostulantesGenero
+    a = b = 0
+    for alumno in listaAlumnos
+      if alumno.genero == "Masculino"
+        a += 1
+      elsif alumno.genero == "Femenino"
+        b += 1
+      else
+        #No hace nada.
+      end
+    end
+
+    listaDatosEstadisticos[0] = a
+    listaDatosEstadisticos[1] = b
   end
 
-  def obtenerAlumno(dniAlumno)
-   	for alumno in listaAlumnos
-  		if alumno.dni == dniAlumno
-      return alumno
+  def obtenerIngresantesGenero
+    a = b = 0
+    for alumno in listaIngresantes
+      if alumno.genero == "Masculino"
+        a += 1
+      elsif alumno.genero == "Femenino"
+        b += 1
+      else
+        #No hace nada.
+      end
+    end
+
+    listaDatosEstadisticos[2] = a
+    listaDatosEstadisticos[3] = b
+  end
+
+  def obtenerNoIngresantesGenero
+    a = b = 0
+    for alumno in listaNoIngresantes
+      if alumno.genero == "Masculino"
+        a += 1
+      elsif alumno.genero == "Femenino"
+        b += 1
+      else
+        #No hace nada.
+      end
+    end
+
+    listaDatosEstadisticos[4] = a
+    listaDatosEstadisticos[5] = b
+  end
+
+  def obtenerIngresantesColegio
+    a = b = 0
+    c = listaIngresantes.length
+
+    for alumno in listaIngresantes
+      if alumno.colegio == "NACIONAL"
+        a += 1
+      elsif alumno.colegio == "PARTICULAR"
+        b += 1
+      else
+        #No hace nada.
+      end
+    end
+
+    listaDatosEstadisticos[6] = (a.to_f / c.to_f * 100.0).round(2)
+    listaDatosEstadisticos[7] = (b.to_f / c.to_f * 100.0).round(2)
+  end
+
+  def obtenerNoIngresantesColegio
+    a = b = 0
+    c = listaNoIngresantes.length
+
+    for alumno in listaNoIngresantes
+      if alumno.colegio == "NACIONAL"
+        a += 1
+      elsif alumno.colegio == "PARTICULAR"
+        b += 1
+      else
+        #No hace nada.
+      end
+    end
+
+    listaDatosEstadisticos[8] = (a.to_f / c.to_f * 100.0).round(2)
+    listaDatosEstadisticos[9] = (b.to_f / c.to_f * 100.0).round(2)
+  end
+
+  def obtenerEstadisticas
+    obtenerPostulantesGenero
+    obtenerIngresantesGenero
+    obtenerNoIngresantesGenero
+    obtenerIngresantesColegio
+    obtenerNoIngresantesColegio
+
+    return listaDatosEstadisticos
+  end
+	
+	def registrarAlumno(alumno)
+  		validarExistenciaAlumno(alumno.dni)
+  		listaAlumnos.push(alumno)
+  	end
+
+  	def obtenerAlumno(dniAlumno)
+   		for alumno in listaAlumnos
+  			if alumno.dni == dniAlumno
+     			return alumno
+    			end
+  		end
+  
+	end
+	
+	  def validarExistenciaAlumno(dni)
+    for alumno in listaAlumnos
+      raise "El alumno ya ha sido registrado." if alumno.dni == dni
     end
   end
-  
+
+  def registrarExamen(examen)
+    validarExistenciaExamen(examen.codigoEvaluacion)
+    listaExamenes.push(examen)
+  end
+
+  def validarExistenciaExamen(codigoEvaluacion)
+    for examen in listaExamenes
+      raise "El examen ya ha sido registrado." if examen.codigoEvaluacion == codigoEvaluacion
+    end
+  end
+
+  def registrarTutor(tutor)
+    for alumno in listaAlumnos  #busca el alumno que le corresponde al tutor
+      if alumno.dni == tutor.dniAlumno
+        n = alumno.listaTutores.length
+        raise "El alumno ya cuenta con 2 tutores registrados." if n == 2  #comprueba que el alumno no tenga más de dos tutores
+        alumno.listaTutores.push(tutor)
+      end
+    end
+  end
+
+  def obtenerTutores(dniAlumno)
+    for alumno in listaAlumnos
+      if alumno.dni == dniAlumno
+        return alumno.listaTutores
+      end
+    end
+  end
+	
 end
 
